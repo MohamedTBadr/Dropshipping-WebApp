@@ -1,0 +1,352 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // --- Access control ---
+        const userType = localStorage.getItem("userType");
+
+        if (!userType || userType.toLowerCase() !== "admin") {
+            // Redirect non-admin users
+            window.location.href = "/index.html";  // or login page or home page
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="CSS/admin.css" />
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-chart-line"></i> <span>AdminPanel</span></h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li class="active"><a href="admin.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="AdminProducts.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+                <li><a href="AdminCategory.html"><i class="fas fa-tags"></i> <span>Categories</span></a></li>
+                <li><a href="AdminBrands.html"><i class="fas fa-star"></i> <span>Brands</span></a></li>
+                <li><a href="AdminOrders.html"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
+                <li><a href="AdminDropshipper.html"><i class="fas fa-users"></i> <span>Customers</span></a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">JD</div>
+                    <div class="user-info">
+                        <div class="user-name">John Doe</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Stats Cards -->
+            <div class="stats-cards">
+                <div class="stat-card" id="products-card">
+                    <div class="stat-icon" style="background-color: #4361ee;">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="products-count">-</h3>
+                        <p>Total Products</p>
+                    </div>
+                </div>
+                <div class="stat-card" id="categories-card">
+                    <div class="stat-icon" style="background-color: #3a0ca3;">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="categories-count">-</h3>
+                        <p>Categories</p>
+                    </div>
+                </div>
+                <div class="stat-card" id="brands-card">
+                    <div class="stat-icon" style="background-color: #7209b7;">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="brands-count">-</h3>
+                        <p>Brands</p>
+                    </div>
+                </div>
+                <div class="stat-card" id="orders-card">
+                    <div class="stat-icon" style="background-color: #f72585;">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="orders-count">-</h3>
+                        <p>Total Orders</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Sales Overview</h3>
+                        <select class="select-control" id="chart-period">
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="quarter">This Quarter</option>
+                        </select>
+                    </div>
+                    <canvas id="salesChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Product Distribution</h3>
+                    </div>
+                    <canvas id="productChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Products</h2>
+                    <!--<div class="card-header">-->
+
+                    <a href="AdminProducts.html" class="btn btn-outline">View All</a>
+
+                </div>
+                <div class="card-body">
+                    <div class="table-controls">
+                        <div class="search-control">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="product-search" placeholder="Search products...">
+                        </div>
+                        <div class="filter-control">
+                            <select class="select-control" id="product-sort">
+                                <option value="name">Sort by Name</option>
+                                <option value="date">Sort by Date</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="loading" id="products-loading">
+                        <div class="spinner"></div>
+                    </div>
+                    <table id="products-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-body">
+                            <!-- Products will be populated here -->
+                        </tbody>
+                    </table>
+                    <div class="empty-state" id="products-empty" style="display: none;">
+                        <i class="fas fa-box-open"></i>
+                        <p>No products found</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories & Brands Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Categories & Brands</h2>
+                </div>
+                <div class="card-body">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="categories">Categories</div>
+                        <div class="tab" data-tab="brands">Brands</div>
+                    </div>
+
+                    <!-- Categories Tab -->
+                    <div id="categories-tab">
+                        <div class="table-controls">
+                            <div class="search-control">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="category-search" placeholder="Search categories...">
+                            </div>
+                            <!--<div class="card-header">-->
+
+                            <a href="AdminCategory.html" class="btn btn-outline">View All</a>
+                            <!--</div>-->
+                        </div>
+                        <div class="loading" id="categories-loading">
+                            <div class="spinner"></div>
+                        </div>
+                        <table id="categories-table" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categories-body">
+                                <!-- Categories will be populated here -->
+                            </tbody>
+                        </table>
+                        <div class="empty-state" id="categories-empty" style="display: none;">
+                            <i class="fas fa-tags"></i>
+                            <p>No categories found</p>
+                        </div>
+                    </div>
+
+                    <!-- Brands Tab -->
+                    <div id="brands-tab" style="display: none;">
+                        <div class="table-controls">
+                            <div class="search-control">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="brand-search" placeholder="Search brands...">
+                            </div>
+                            <!--<div class="card-header">-->
+
+                            <a href="AdminBrands.html" class="btn btn-outline">View All</a>
+                            <!--</div>-->
+                        </div>
+                        <div class="loading" id="brands-loading">
+                            <div class="spinner"></div>
+                        </div>
+                        <table id="brands-table" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="brands-body">
+                                <!-- Brands will be populated here -->
+                            </tbody>
+                        </table>
+                        <div class="empty-state" id="brands-empty" style="display: none;">
+                            <i class="fas fa-star"></i>
+                            <p>No brands found</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recent Orders</h2>
+                    <button class="btn btn-outline">View All</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-controls">
+                        <div class="search-control">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="order-search" placeholder="Search orders...">
+                        </div>
+                        <div class="filter-control">
+                            <select class="select-control" id="order-status-filter">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="loading" id="orders-loading">
+                        <div class="spinner"></div>
+                    </div>
+                    <table id="orders-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Dropshipper</th>
+                                <th>Order Price</th>
+                                <th>Discount</th>
+                                <th>Status</th>
+                                <th>Shipped Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-body">
+                            <!-- Orders will be populated here -->
+                        </tbody>
+                    </table>
+                    <div class="empty-state" id="orders-empty" style="display: none;">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>No orders found</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Product</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="product-form">
+                    <div class="form-group">
+                        <label for="product-name">Product Name</label>
+                        <input type="text" id="product-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-category">Category</label>
+                        <select id="product-category" class="form-control" required>
+                            <option value="">Select a category</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-brand">Brand</label>
+                        <select id="product-brand" class="form-control" required>
+                            <option value="">Select a brand</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-price">Price</label>
+                        <input type="number" id="product-price" class="form-control" step="0.01" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancel-product">Cancel</button>
+                <button class="btn btn-primary" id="save-product">Save Product</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-message">Operation completed successfully</span>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="JS/admin.js"></script>
+</body>
+
+</html>

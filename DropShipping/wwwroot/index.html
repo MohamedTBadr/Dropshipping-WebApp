@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DropZone - Home</title>
+    <link rel="stylesheet" href="./home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+</head>
+
+<body>
+
+
+    <header class="main-header">
+        <div class="container">
+            <!-- Logo -->
+            <div class="logo">
+                <div class="circle"></div>
+                <a href="index.html" class="headName">
+                    <h1>DropZone</h1>
+                </a>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search product ..." />
+                <button id="searchBtn"><i class="fa fa-search"></i></button>
+            </div>
+
+            <div class="right-section">
+                <div class="cart">
+                    <a href="ShoppingCart.html"><i class="fa fa-shopping-basket"></i></a>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <a href="#" class="login-link">Logout</a>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li class="dropdown">
+                    <a href="#">All Products <i class="fa fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Loading...</a></li>
+                    </ul>
+                </li>
+
+                <!--<li><a href="#">New Products</a></li>-->
+                <li><a href="./orders.html">Orders</a></li>
+                <li><a href="DropshipperProfile.html">Profile</a></li>
+            </ul>
+        </nav>
+
+    </header>
+
+    <section class="hero">
+        <div class="hero-image">
+            <img src="./images/HeroImage (2).png" alt="TV setup" />
+        </div>
+
+        <div class="hero-content">
+            <h1>Global Electronics Dropshipping Made Simple</h1>
+            <p>
+                We connect you to trusted manufacturers and trending tech products — scale your business without
+                inventory or
+                logistics stress.
+            </p>
+            <a href="#" class="btn">View Latest Products</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature">
+            <i class="fa fa-truck"></i>
+            <div>
+                <h4>Inventory tracking</h4>
+                <p>Live stock updates</p>
+            </div>
+        </div>
+
+        <div class="feature">
+            <i class="fa fa-comments"></i>
+            <div>
+                <h4>We are available 24/7</h4>
+                <p>Need help? Contact us anytime</p>
+            </div>
+        </div>
+
+        <div class="feature">
+            <i class="fa fa-rotate-left"></i>
+            <div>
+                <h4>Satisfied or return</h4>
+                <p>Easy 30-day return policy</p>
+            </div>
+        </div>
+
+
+    </section>
+
+    <section class="categories">
+        <div class="category-grid">
+            <h2>Shop by Category</h2>
+
+            <div class="category-item">
+                <img src="./images/Phones2.png" alt="Phones" />
+                <h3>Phones</h3>
+                <p>4 PRODUCTS</p>
+            </div>
+
+            <div class="category-item">
+                <img src="./images/laptopsCategory.png" alt="Laptops" />
+                <h3>Laptops</h3>
+                <p>5 PRODUCTS</p>
+            </div>
+
+            <div class="category-item">
+                <img src="./images/HeadphoneCategory.png" alt="Headphones" />
+                <h3>Headphones</h3>
+                <p>6 PRODUCTS</p>
+            </div>
+
+            <div class="category-item">
+                <img src="./images/ChargersCategory.png" alt="Chargers" />
+                <h3>Chargers</h3>
+                <p>5 PRODUCTS</p>
+            </div>
+
+            <div class="category-item">
+                <img src="./images/Cables.png" alt="Cables" />
+                <h3>Cables</h3>
+                <p>6 PRODUCTS</p>
+            </div>
+
+            <div class="category-item">
+                <img src="./images/TelevisionsCategory.png" alt="Televisions" />
+                <h3>TVs</h3>
+                <p>4 PRODUCTS</p>
+            </div>
+
+            <div class="category-item">
+                <img src="./images/HomeAppliancesCategory.png" alt="HomeAppliances" />
+                <h3>Home Appliances</h3>
+                <p>4 PRODUCTS</p>
+            </div>
+
+            <div class="category-item">
+                <img src="./images/SmartWatchesCategory.png" alt="SmartWatches" />
+                <h3>Smartwatches</h3>
+                <p>5 PRODUCTS</p>
+            </div>
+        </div>
+    </section>
+    <section class="new-products">
+        <div class="product-grid" id="newProductsContainer">
+            <h2>Products</h2>
+            <a href="#" class="see-more">See more</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 Dropshipping. All rights reserved.</p>
+    </footer>
+    <script src="./assets/js/navigation.js"></script>
+    <script src="./assets/js/api.js"></script>
+    <script>
+        async function loadNewestProducts() {
+            const container = document.getElementById("newProductsContainer");
+
+            try {
+                const response = await fetch("https://localhost:7000/api/Products?pageIndex=1&pageSize=4", { headers: getAuthHeaders() });
+                const data = await response.json();
+
+                const products = data.result;
+
+                // Remove old static items if they exist
+                container.querySelectorAll(".product-item").forEach(item => item.remove());
+
+                products.forEach(product => {
+                    const item = document.createElement("div");
+                    item.classList.add("product-item");
+
+                    item.innerHTML = `
+                      <div class="product-item-image">
+                          <img src="${product.images?.[0] ?? './images/default.png'}" alt="${product.name}" />
+                      </div>
+                      <div class="product-item-info">
+                          <h3>${product.name}</h3>
+                          <p>$${product.price}</p>
+                      </div>
+                  `;
+
+                    container.appendChild(item);
+                });
+
+            } catch (error) {
+                console.error("Error loading products:", error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadNewestProducts);
+        // header search behavior: redirect to search page with query q
+        (function () {
+            const input = document.querySelector('.search-bar input');
+            const btn = document.querySelector('.search-bar button');
+            if (!input) return;
+            const submit = () => {
+                const term = (input.value || '').trim();
+                if (!term) return;
+                window.location.href = `search.html?q=${encodeURIComponent(term)}`;
+            };
+            btn?.addEventListener('click', submit);
+            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+        })();
+    </script>
+
+    <script src="./assets/js/cart.js"></script>
+</body>
+
+</html>

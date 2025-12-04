@@ -1,0 +1,285 @@
+﻿<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin — Management</title>
+
+    ```
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/index.css" />
+
+    <script>
+         --- Access control (optional) ---
+         const userType = localStorage.getItem("userType");
+         if (!userType || userType.toLowerCase() !== "admin") {
+             window.location.href = "/index.html";
+         }
+    </script>
+  
+
+</head>
+
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-chart-line"></i> <span>AdminPanel</span></h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="admin.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li class="active"><a href="Admins.html"><i class="fas fa-users"></i> <span>Admins</span></a></li>
+                <li><a href="AdminProducts.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+                <li><a href="AdminCategory.html"><i class="fas fa-tags"></i> <span>Categories</span></a></li>
+                <li><a href="AdminBrands.html"><i class="fas fa-star"></i> <span>Brands</span></a></li>
+                <li><a href="AdminOrders.html"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+            </ul>
+        </div>
+    </div>
+
+    ```
+    <!-- MAIN WRAPPER -->
+    <div class="main">
+        <header class="header">
+            <div class="header-left">
+                <h1>Admins — Management</h1>
+                <div class="muted" style="font-size:13px;margin-top:6px;">Add, edit, delete, and view Admins</div>
+            </div>
+            <div class="header-right">
+                <div class="search" title="Search">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 21l-4.35-4.35"></path>
+                        <circle cx="11" cy="11" r="6"></circle>
+                    </svg>
+                    <input id="searchInput" placeholder="Search Admin by name or email" />
+                </div>
+                <button id="addAdminBtn" class="btn">+ Add Admin</button>
+                <div class="user-profile" style="margin-left:8px;">
+                    <div class="user-avatar">A</div>
+                    <div class="muted" style="font-size:14px;">Admin</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="container">
+                <table aria-label="Admins table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>City</th>
+                            <th>Country</th>
+                            <th style="text-align:right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        <!-- Admin rows dynamically inserted via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Admin Modal -->
+    <div class="overlay" id="modalOverlay">
+        <div class="modal" id="modalBox" style="width:600px; max-width:95%;">
+            <h2 id="modalTitle">Add Admin</h2>
+            <form id="modalForm">
+                <input type="hidden" id="adminId">
+
+                <div class="row" style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:200px">
+                        <label>Name</label>
+                        <input id="adminName" required>
+                    </div>
+                    <div style="flex:1; min-width:200px">
+                        <label>Email</label>
+                        <input id="adminEmail" type="email" required>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:200px">
+                        <label>Phone</label>
+                        <input id="adminPhone" required>
+                    </div>
+                    <div style="flex:1; min-width:200px">
+                        <label>Password</label>
+                        <input id="adminPassword" type="password" required>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:200px">
+                        <label>Confirm Password</label>
+                        <input id="adminConfirmPassword" type="password" required>
+                    </div>
+                    <div style="flex:1; min-width:200px">
+                        <label>Street</label>
+                        <input id="adminStreet" required>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:200px">
+                        <label>City</label>
+                        <input id="adminCity" required>
+                    </div>
+                    <div style="flex:1; min-width:200px">
+                        <label>Country</label>
+                        <input id="adminCountry" required>
+                    </div>
+                </div>
+
+                <div id="error-message" style="color:red;"></div>
+
+                <div style="margin-top:12px; display:flex; justify-content:flex-end; gap:8px;">
+                    <button type="button" class="btn-muted" id="cancelModal">Cancel</button>
+                    <button type="submit" class="btn-primary" id="saveModal">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="overlay" id="deleteOverlay">
+        <div class="modal" style="max-width:420px">
+            <h2>Delete Admin?</h2>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
+                <button class="btn-muted" id="cancelDelete">Cancel</button>
+                <button class="btn-primary" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal controls
+        const modalOverlay = document.getElementById('modalOverlay');
+        const deleteOverlay = document.getElementById('deleteOverlay');
+
+        document.getElementById('addAdminBtn')?.addEventListener('click', () => modalOverlay.classList.add('show'));
+        document.getElementById('cancelModal')?.addEventListener('click', () => modalOverlay.classList.remove('show'));
+        document.getElementById('cancelDelete')?.addEventListener('click', () => deleteOverlay.classList.remove('show'));
+
+        // Sidebar toggle
+        document.addEventListener('keydown', e => {
+            if (e.key.toLowerCase() === 'm') document.getElementById('sidebar').classList.toggle('collapsed');
+        });
+
+        const apiUrl = 'https://localhost:7000/api/Admin';
+        const tbody = document.getElementById('tbody');
+        const modalForm = document.getElementById('modalForm');
+        const errorMessage = document.getElementById('error-message');
+        let deleteId = null;
+
+        // --- FETCH & DISPLAY ADMINS ---
+        async function loadAdmins() {
+            tbody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+            try {
+                const res = await fetch(apiUrl);
+                const data = await res.json();
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6">No data found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.forEach(admin => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${admin.userName}</td>
+                        <td>${admin.email}</td>
+                        <td>${admin.phoneNumber}</td>
+                        <td>${admin.address.street}</td>
+                        <td>${admin.address.street}</td>
+                        <td style="text-align:right">
+                            <button class="btn delBtn" onclick="confirmDelete('${admin.id}')"> 🗑️</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="6">Error loading data</td></tr>';
+                console.error(err);
+            }
+        }
+
+        // --- ADD NEW ADMIN ---
+        modalForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            errorMessage.textContent = '';
+
+            const payload = {
+                name: document.getElementById('adminName').value.trim(),
+                email: document.getElementById('adminEmail').value.trim(),
+                phone: document.getElementById('adminPhone').value.trim(),
+                password: document.getElementById('adminPassword').value,
+                confirmPassword: document.getElementById('adminConfirmPassword').value,
+                address_Street: document.getElementById('adminStreet').value.trim(),
+                address_City: document.getElementById('adminCity').value.trim(),
+                address_Country: document.getElementById('adminCountry').value.trim()
+            };
+
+            if (payload.password !== payload.confirmPassword) {
+                errorMessage.textContent = "Passwords do not match";
+                return;
+            }
+
+            try {
+                const res = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const errData = await res.json();
+                    errorMessage.textContent = errData?.message || 'Failed to add admin';
+                    return;
+                }
+
+                modalForm.reset();
+                modalOverlay.classList.remove('show');
+                loadAdmins();
+            } catch (err) {
+                console.error(err);
+                errorMessage.textContent = 'Error connecting to API';
+            }
+        });
+
+        // --- DELETE ADMIN ---
+        function confirmDelete(id) {
+            deleteId = id;
+            deleteOverlay.classList.add('show');
+        }
+
+        document.getElementById('confirmDelete').addEventListener('click', async () => {
+            if (!deleteId) return;
+
+            try {
+                const res = await fetch(`${apiUrl}/${deleteId}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error('Failed to delete');
+                deleteId = null;
+                deleteOverlay.classList.remove('show');
+                loadAdmins();
+            } catch (err) {
+                console.error(err);
+                alert('Error deleting admin');
+            }
+        });
+
+        // --- INITIAL LOAD ---
+        loadAdmins();
+    </script>
+    ```
+
+</body>
+</html>

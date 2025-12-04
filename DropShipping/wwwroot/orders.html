@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - DropZone</title>
+    <link rel="stylesheet" href="./home.css">
+    <link rel="stylesheet" href="./assets/css/product.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        .orders-container {
+            width: 90%;
+            margin: 40px auto;
+        }
+
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+            .orders-header h1 {
+                color: #54595F;
+                font-size: 2rem;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #54595F;
+        }
+
+        tr:hover {
+            background-color: #f5fbff;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+            .status.pending {
+                background: #f0ad4e;
+            }
+
+            .status.shipped {
+                background: #5bc0de;
+            }
+
+            .status.delivered {
+                background: #5cb85c;
+            }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+            .pagination button {
+                padding: 8px 15px;
+                border: none;
+                background: #6EC1E4;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+                .pagination button:disabled {
+                    background: #ccc;
+                    cursor: not-allowed;
+                }
+
+        /* FOOTER */
+        .footer {
+            background-color: #2C3742;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 0.95rem;
+            font-family: "Roboto", sans-serif;
+            margin-top: 60px;
+        }
+
+            .footer p {
+                margin: 5px 0;
+            }
+
+            .footer a {
+                color: white;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+                .footer a:hover {
+                    text-decoration: underline;
+                }
+    </style>
+</head>
+
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
+
+    <div style="flex: 1;">
+        <header class="main-header">
+            <div class="container">
+                <div class="logo">
+                    <div class="circle"></div>
+                    <a href="index.html" class="headName">
+                        <h1>DropZone</h1>
+                    </a>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search product ..." />
+                    <button><i class="fa fa-search"></i></button>
+                </div>
+                <div class="right-section">
+                    <div class="cart">
+                        <a href="ShoppingCart.html"><i class="fa fa-shopping-basket"></i></a>
+                        <span class="cart-count">0</span>
+                    </div>
+                    <a href="#" class="login-link">Logout</a>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li class="dropdown">
+                        <a href="#">All Categories</a>
+                        <ul class="dropdown-menu"></ul>
+                    </li>
+                    <li><a href="Orders.html" style="color:#6EC1E4; font-weight:700;">Orders</a></li>
+                    <li><a href="#">Profile</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="orders-container">
+            <div class="orders-header">
+                <h1>Your Orders</h1>
+            </div>
+
+            <table id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>Customer Data</th>
+                        <th>Product</th>
+                        <th>Status</th>
+                        <th>Items Count</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersBody"></tbody>
+            </table>
+
+            <!-- Pagination Controls -->
+            <div class="pagination">
+                <button id="prevPage">Previous</button>
+                <span id="pageInfo"></span>
+                <button id="nextPage">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2025 Dropshipping. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let orders = [];
+        let pageIndex = 1;
+        const pageSize = 5; // Number of orders per page
+        let totalCount = 0;
+        function getAuthHeaders(extra = {}) {
+            const token = localStorage.getItem('token');
+            const headers = Object.assign({}, extra);
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            return headers;
+        }
+
+        async function fetchOrders(page = 1) {
+            try {
+                const response = await fetch(`/api/Order?pageIndex=${page}&pageSize=${pageSize}`, { headers: getAuthHeaders() });
+                if (!response.ok) throw new Error("Failed to fetch orders");
+
+                const data = await response.json();
+                orders = data.result || data || [];
+                pageIndex = data.pageIndex || page;
+                totalCount = data.totalCount || orders.length;
+
+                loadTable();
+                updatePagination();
+            } catch (err) {
+                console.error("Error fetching orders:", err);
+                document.getElementById("ordersBody").innerHTML = `
+                        <tr><td colspan="6" style="text-align:center">Failed to load orders</td></tr>
+                    `;
+            }
+        }
+
+        function loadTable() {
+            const body = document.getElementById("ordersBody");
+            body.innerHTML = "";
+
+            if (orders.length === 0) {
+                body.innerHTML = `<tr><td colspan="6" style="text-align:center">No orders found</td></tr>`;
+                return;
+            }
+
+            const statusMap = {
+                1: { text: "Pending", class: "status pending" },
+                0: { text: "Shipped", class: "status shipped" },
+                2: { text: "Canceled", class: "status delivered" }
+            };
+
+            orders.forEach(order => {
+                const productName = order.items?.[0]?.productName || "No product";
+                const status = statusMap[order.orderStatus] || { text: "Unknown", class: "" };
+
+                body.innerHTML += `
+                        <tr>
+                            <td>
+                                ${order.customerName || "No name"}<br>
+                                ${order.customerEmail ? order.customerEmail + "<br>" : ""}
+                                ${order.customerAddress || ""}<br>
+                                ${order.customerPhone || ""}
+                            </td>
+                            <td>${productName}</td>
+                            <td><span class="${status.class}">${status.text}</span></td>
+                            <td>${order.items?.length || 0}</td>
+                            <td>${order.shippedDate ? order.shippedDate.split("T")[0] : "—"}</td>
+                            <td><!-- Actions can go here --></td>
+                        </tr>
+                    `;
+            });
+        }
+
+        function updatePagination() {
+            const prevBtn = document.getElementById("prevPage");
+            const nextBtn = document.getElementById("nextPage");
+            const pageInfo = document.getElementById("pageInfo");
+
+            const totalPages = Math.ceil(totalCount / pageSize);
+            pageInfo.textContent = `Page ${pageIndex} of ${totalPages}`;
+
+            prevBtn.disabled = pageIndex <= 1;
+            nextBtn.disabled = pageIndex >= totalPages;
+
+            prevBtn.onclick = () => fetchOrders(pageIndex - 1);
+            nextBtn.onclick = () => fetchOrders(pageIndex + 1);
+        }
+
+        // Initial load
+        fetchOrders();
+    </script>
+
+</body>
+</html>

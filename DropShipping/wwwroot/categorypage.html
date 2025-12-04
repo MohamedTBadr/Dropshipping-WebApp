@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category - DropZone</title>
+    <link rel="stylesheet" href="./home.css">
+    <link rel="stylesheet" href="assets/css/product.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container">
+            <!-- Logo -->
+            <div class="logo">
+                <div class="circle"></div>
+                <a href="index.html" class="headName">
+                    <h1>DropZone</h1>
+                </a>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search product ..." />
+                <button id="searchBtn"><i class="fa fa-search"></i></button>
+            </div>
+
+            <div class="right-section">
+                <div class="cart">
+                    <a href="ShoppingCart.html"><i class="fa fa-shopping-basket"></i></a>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <a href="#" class="login-link">Logout</a>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li class="dropdown">
+                    <a href="#">All Products <i class="fa fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Loading...</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#">New Products</a></li>
+                <li><a href="#">Orders</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </nav>
+
+    </header>
+
+    <div class="container category-page-container">
+        <div class="category-layout">
+            <!-- Main Content (Products) -->
+            <div class="main-content">
+                <div class="category-header-box">
+                    <h1 id="categoryTitle">Category Name</h1>
+                    <p id="resultsCount"></p>
+                </div>
+                <div class="products-container">
+
+                    <div class="products-grid" id="categoryProducts">
+                        <!--products will be populated by JavaScript -->
+                    </div>
+
+                    <div id="pagination" class="pagination-container"></div>
+                </div>
+            </div>
+
+            <!-- Sidebar (Filters) -->
+            <div class="filters-sidebar">
+                <div class="filter-box">
+                    <h3>Brands</h3>
+                    <div id="brandFilters" class="brand-list"></div>
+                    <button id="clearFilters" class="btn-clear-filters">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>About</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Safety Center</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact</h3>
+                    <p>contact@info.com</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+    <script src="assets/js/navigation.js"></script>
+    <script src="assets/js/categorypage.js"></script>
+</body>
+
+</html>

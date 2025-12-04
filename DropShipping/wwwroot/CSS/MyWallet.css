@@ -1,0 +1,65 @@
+﻿.wallet-section h1 {
+    font-size: 32px;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.wallet-section .card {
+    border-radius: 10px;
+    background: white;
+}
+
+    .wallet-section .card h2 {
+        font-size: 40px;
+        color: #007bff;
+    }
+
+.wallet-section .btn-primary {
+    background-color: #007bff;
+    border: none;
+    font-weight: 600;
+    padding: 10px 25px;
+}
+
+    .wallet-section .btn-primary:hover {
+        background-color: #0056cc;
+    }
+
+/* Transaction table */
+.transaction-history {
+    margin-top: 40px;
+    text-align: left;
+}
+
+    .transaction-history h3 {
+        color: #1e293b;
+        font-weight: 700;
+    }
+
+    .transaction-history .table {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .transaction-history .table thead {
+            background-color: #007bff !important;
+            color: white;
+        }
+
+        .transaction-history .table td {
+            font-size: 15px;
+        }
+
+    .transaction-history .text-success {
+        font-weight: 600;
+    }
+
+    .transaction-history .text-danger {
+        font-weight: 600;
+    }
+
+    .transaction-history .badge {
+        font-size: 12px;
+        padding: 6px 10px;
+    }

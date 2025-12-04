@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Wallet</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="CSS/ShoppingCartCSS.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">Drop Shopping</div>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="#">Categories</a>
+                <a href="ShoppingCart.html">Shopping Cart</a>
+                <a href="Wallet.html">My Wallet</a>
+            </nav>
+            <div class="header-right">
+                <input type="text" placeholder="Search product ..." class="search-box">
+                <a href="#" class="login">Log In</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Wallet Section -->
+    <main class="wallet-section container my-5">
+        <h1 class="mb-4 text-center">My Wallet</h1>
+
+        <!-- Balance Card -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-6">
+                <div class="card text-center shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Current Balance</h5>
+                        <h2 class="card-text text-primary fw-bold">$0.00</h2>
+                        <button class="btn btn-primary mt-3">Add Funds</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="transaction-history">
+            <h3 class="mb-3">Transaction History</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="text-center">Loading transactions...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <h3>Shop</h3>
+                <ul>
+                    <li><a href="#">Hot deals</a></li>
+                    <li><a href="#">Categories</a></li>
+                    <li><a href="#">Brands</a></li>
+                    <li><a href="#">Rebates</a></li>
+                    <li><a href="#">Weekly deals</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Need help?</h3>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Order tracking</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Return policy</a></li>
+                    <li><a href="#">Privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <p>contact@info.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const walletApiUrl = 'https://localhost:7000/api/Dropshipper/Wallet/a11cb934-4cad-447b-98a4-4ee050d718ce';
+
+            const balanceElement = document.querySelector(".card-text");
+            const transactionTableBody = document.querySelector(".transaction-history tbody");
+
+            fetch(walletApiUrl, { headers: getAuthHeaders() })
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.json();
+                })
+                .then(data => {
+                    // Update Balance safely
+                    const balance = data.balance || 0;
+                    balanceElement.textContent = `$${parseFloat(balance).toFixed(2)}`;
+
+                    // Clear previous transactions
+                    transactionTableBody.innerHTML = '';
+
+                    // Populate Transactions
+                    if (!data.walletTransactions || data.walletTransactions.length === 0) {
+                        transactionTableBody.innerHTML = `<tr><td colspan="5" class="text-center">No transactions available</td></tr>`;
+                    } else {
+                        data.walletTransactions.forEach(tx => {
+                            const amount = parseFloat(tx.amount) || 0;
+                            const date = tx.transactionDate ? new Date(tx.transactionDate).toLocaleDateString() : '';
+                            const description = tx.description || '';
+                            const type = amount >= 0 ? 'Credit' : 'Debit';
+                            const amountClass = amount >= 0 ? 'text-success' : 'text-danger';
+                            const amountSign = amount >= 0 ? '+' : '-';
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                    <td>${date}</td>
+                                    <td>${description}</td>
+                                    <td>${type}</td>
+                                    <td class="${amountClass}">${amountSign} $${Math.abs(amount).toFixed(2)}</td>
+                                    <td><span class="badge ${amount >= 0 ? 'bg-success' : 'bg-danger'}">Completed</span></td>
+                                `;
+                            transactionTableBody.appendChild(row);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching wallet data:", error);
+                    transactionTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Failed to load transactions</td></tr>`;
+                    balanceElement.textContent = "$0.00";
+                });
+        });
+    </script>
+</body>
+
+</html>

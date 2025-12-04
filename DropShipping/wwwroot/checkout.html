@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout - Drop Shopping</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./home.css">
+    <link rel="stylesheet" href="CSS/checkout.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <!-- Logo -->
+            <div class="logo">
+                <div class="circle"></div>
+                <a href="index.html" class="headName">
+                    <h1>DropZone</h1>
+                </a>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" placeholder="Search product ..." />
+                <button><i class="fa fa-search"></i></button>
+            </div>
+
+            <div class="right-section">
+                <div class="cart">
+                    <a href="ShoppingCart.html"><i class="fa fa-shopping-basket"></i></a>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <a href="#" class="login-link">Logout</a>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li class="dropdown">
+                    <a href="#">All Products <i class="fa fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Phones</a></li>
+                        <li><a href="#">Laptops</a></li>
+                        <li><a href="#">Headphones</a></li>
+                        <li><a href="#">Chargers</a></li>
+                        <li><a href="#">Cables</a></li>
+                        <li><a href="#">TVs</a></li>
+                        <li><a href="#">Home Appliances</a></li>
+                        <li><a href="#">Smartwatches</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#">New Products</a></li>
+                <li><a href="#">Orders</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Checkout Section -->
+    <main class="checkout-section container1">
+        <h1 class="mb-4">Checkout</h1>
+
+        <div class="row">
+            <!-- Left Column: Customer Details Form -->
+            <div class="col-lg-7">
+                <div class="card p-4 mb-4">
+                    <h3 class="mb-4">Customer Information</h3>
+                    <form id="checkoutForm">
+                        <div class="mb-3">
+                            <label for="customerName" class="form-label">Full Name <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="customerName" name="name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="customerEmail" class="form-label">Email Address <span
+                                    class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="customerEmail" name="email" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="customerPhone" class="form-label">Phone Number <span
+                                    class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="customerPhone" name="phoneNumber" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="customerAddress" class="form-label">Shipping Address <span
+                                    class="text-danger">*</span></label>
+                            <textarea class="form-control" id="customerAddress" name="address" rows="3"
+                                required></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Order Summary -->
+            <div class="col-lg-5">
+                <div class="card p-4 mb-4">
+                    <h3 class="mb-4">Order Summary</h3>
+
+                    <!-- Cart Items -->
+                    <div id="orderItemsList" class="order-items-list mb-3">
+                        <!-- Dynamic items will be inserted here -->
+                    </div>
+
+                    <hr>
+
+                    <!-- Price Summary -->
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <strong id="subtotalValue">$0.00</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping:</span>
+                        <strong id="shippingValue">$0.00</strong>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="h5">Total:</span>
+                        <strong class="h5 text-primary" id="totalValue">$0.00</strong>
+                    </div>
+
+                    <!-- Place Order Button -->
+                    <button type="button" class="btn btn-primary w-100 btn-lg" id="placeOrderBtn">
+                        Place Order
+                    </button>
+                </div>
+
+                <a href="ShoppingCart.html" class="btn btn-outline-secondary w-100">
+                    ← Back to Cart
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <h3>Shop</h3>
+                <ul>
+                    <li><a href="#">Hot deals</a></li>
+                    <li><a href="#">Categories</a></li>
+                    <li><a href="#">Brands</a></li>
+                    <li><a href="#">Rebates</a></li>
+                    <li><a href="#">Weekly deals</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Need help?</h3>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Order tracking</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Return policy</a></li>
+                    <li><a href="#">Privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <p>contact@info.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-5">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mb-0">Processing your order...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/checkout.js"></script>
+    <script src="./assets/js/cart.js"></script>
+</body>
+
+</html>

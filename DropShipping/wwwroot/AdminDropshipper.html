@@ -1,0 +1,242 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin — DropShipper (API)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="CSS/dropshipper.css" />
+    <link rel="stylesheet" href="CSS/index.css" />
+    <script>
+        // --- Access control ---
+        const userType = localStorage.getItem("userType");
+
+        if (!userType || userType.toLowerCase() !== "admin") {
+            // Redirect non-admin users
+            window.location.href = "/index.html";  // or login page or home page
+        }
+    </script>
+
+
+    <style>
+    </style>
+</head>
+            <body>
+                <!-- SIDEBAR -->
+                <div class="sidebar" id="sidebar">
+                    <div class="sidebar-header">
+                        <h2><i class="fas fa-chart-line"></i> <span>AdminPanel</span></h2>
+                    </div>
+
+                    <div class="sidebar-menu">
+                        <ul>
+                            <li><a href="admin.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                            <li ><a href="AdminProducts.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+                            <li><a href="AdminCategory.html"><i class="fas fa-tags"></i> <span>Categories</span></a></li>
+                            <li><a href="AdminBrands.html"><i class="fas fa-star"></i> <span>Brands</span></a></li>
+                            <li><a href="AdminOrders.html"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
+                            <li class="active"><a href="AdminDropshipper.html"><i class="fas fa-users"></i> <span>Customers</span></a></li>
+                            <li><a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- MAIN WRAPPER -->
+                <div class="main">
+
+                    <!-- HEADER -->
+                    <header class="header">
+                        <div class="header-left">
+                            <h1>DropShipper — Admin</h1>
+                            <div class="muted" style="font-size:13px;margin-top:6px;">Search & manage products (API-driven)</div>
+                        </div>
+
+                        <div class="header-right">
+                            <!--<div class="search" title="Search">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-4.35-4.35"></path><circle cx="11" cy="11" r="6"></circle></svg>
+                                <input id="searchInput" placeholder="Search term (e.g. tablet)" />
+                            </div>
+
+                            <button id="addProductBtn" class="btn">+ Add</button>-->
+
+                            <div class="user-profile" style="margin-left:8px;">
+                                <div class="user-avatar">M</div>
+                                <div class="muted" style="font-size:14px;">Mohamed</div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <!-- CONTENT -->
+                    <div class="content">
+                        <div class="container">
+                            <header>
+                                <div>
+                                    <h1>DropShipper — Admin</h1>
+                                    <div style="margin-top:8px;color:var(--muted);font-size:13px">Search & manage products (API-driven)</div>
+                                </div>
+
+                                <div style="display:flex;gap:12px;align-items:center">
+                                    <div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-4.35-4.35"></path><circle cx="11" cy="11" r="6"></circle></svg><input id="searchInput" placeholder="Search term (e.g. tablet)" /></div>
+                                    <button id="addProductBtn" class="btn">+ Add</button>
+                                </div>
+                            </header>
+
+                            <div class="filters">
+                                <!--<div class="filter">
+                                    <label>Category</label>-->
+                                    <!-- category dropdown will be populated by script (data-id = GUID) -->
+                                    <!--<div class="dropdown" data-type="category" id="categoryDropdown">
+                                        Loading...
+                                        <div class="dropdown-menu" id="categoryMenu"></div>
+                                    </div>
+                                </div>
+
+                                <div class="filter">
+                                    <label>Brand</label>
+                                    <div class="dropdown" data-type="brand" id="brandDropdown">
+                                        Loading...
+                                        <div class="dropdown-menu" id="brandMenu"></div>
+                                    </div>
+                                </div>-->
+                                <!-- <div class="filter">
+                                    <label>Sort</label>
+                                    <div class="dropdown" data-type="sort" id="sortDropdown">Default
+                                        <div class="dropdown-menu">
+                                            <div class="opt" data-id="default">Default</div>
+                                            <div class="opt" data-id="name_asc">Name (A–Z)</div>
+                                            <div class="opt" data-id="price_asc">Price (Low → High)</div>
+                                            <div class="opt" data-id="price_desc">Price (High → Low)</div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+
+                            <table aria-label="Products table">
+                                <thead>
+                                    <tr>
+                                        <!--<th>Image</th>-->
+                                        <th>Name</th>
+                                        <th>Email</th>
+
+                                        <th>Phone Number</th>
+                                        <th>Address</th>
+                                        <th style="text-align:right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody">
+                                    <!-- rows come from script.js -->
+                                </tbody>
+                            </table>
+
+                            <div id="pagination" style="margin-top:20px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap;"></div>
+                        </div>
+                        <!-- Add / Edit Modal -->
+                        <div class="overlay" id="modalOverlay">
+                            <div class="modal" id="modalBox" style="width: 900px; height: 500px;">
+                                <h2 id="modalTitle"> Product Management</h2>
+                                <form id="modalForm">
+                                    <input type="hidden" id="productId">
+
+                                        <div class="row" style="margin-bottom:10px; display:flex; gap:10px;">
+                                            <div style="flex:1">
+                                                <label>User Name</label>
+                                                <input id="userName" required>
+                                            </div>
+                                            <div style="flex:1">
+                                                <label>Email</label>
+                                                <input id="email" type="email" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" style="margin-bottom:10px; display:flex; gap:10px;">
+                                            <div style="flex:1">
+                                                <label>Phone Number</label>
+                                                <input id="phoneNumber" required>
+                                            </div>
+                                            <div style="flex:1">
+                                                <label>Password</label>
+                                                <input id="password" type="password" required>
+                                            </div>
+                                        </div>
+
+                                        <h3 style="margin-top:10px">Address</h3>
+
+                                        <div class="row" style="margin-bottom:10px; display:flex; gap:10px;">
+                                            <div style="flex:1">
+                                                <label>Street</label>
+                                                <input id="street" required>
+                                            </div>
+                                            <div style="flex:1">
+                                                <label>City</label>
+                                                <input id="city" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" style="margin-bottom:10px; display:flex; gap:10px;">
+                                            <div style="flex:1">
+                                                <label>Country</label>
+                                                <input id="country" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="actions-row">
+                                            <button type="button" id="cancelModal" class="btn-muted">Cancel</button>
+                                            <button class="btn-primary">Save</button>
+                                        </div>
+                                </form>
+
+                            </div>
+                        </div>
+
+                        <!-- View Modal -->
+                        <div class="overlay" id="viewOverlay">
+                            <div class="modal view-modal" style="width: 1000px;">
+                                <!-- Increased max-width for better space -->
+                                <h2 id="viewTitle" class="modal-title">Product Details</h2>
+
+                                <div class="view-content">
+                                    <!-- Image Section -->
+                                    <div class="image-section">
+                                        <img id="viewImg" src="" alt="Main Product Image" class="main-image">
+
+                                            <!-- Thumbnails: Horizontal scrollable container -->
+                                            <div id="viewThumbnails" class="thumbnails-container"></div>
+                                    </div>
+
+                                    <!-- Details Section -->
+                                    <div class="details-section">
+                                        <div id="viewName" class="product-name"></div>
+                                        <div id="viewDescription" class="product-description"></div>
+                                        <div id="viewPrice" class="product-price"></div>
+                                        <div id="viewBrand" class="product-brand"></div>
+                                        <div id="viewCategory" class="product-category"></div>
+                                        <div id="viewYear" class="product-year"></div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn-muted" id="closeView">Close</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Delete Confirm Modal -->
+                        <div class="overlay" id="deleteOverlay">
+                            <div class="modal" style="max-width:420px">
+                                <h2>Delete product?</h2>
+                                <div id="deleteMsg" style="color:var(--muted);margin-top:8px">Are you sure?</div>
+                                <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
+                                    <button class="btn-muted" id="cancelDelete">Cancel</button>
+                                    <button class="btn-primary" id="confirmDelete">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <script src="js/AdminDropshipper.js"></script>
+    </body>
+</html>

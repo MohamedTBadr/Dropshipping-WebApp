@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stats-cards {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background-color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 1rem;
+            flex: 1 1 200px;
+            text-align: center;
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .card p {
+            font-size: 2rem;
+            margin: 0.5rem 0 0 0;
+            color: #2980b9;
+        }
+
+        .tables-section {
+            margin: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        table th,
+        table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #2980b9;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Admin Dashboard</h1>
+    </header>
+
+    <main>
+        <section class="stats-cards">
+            <div class="card" id="products-card">
+                <h3>Products</h3>
+                <p id="products-count">0</p>
+            </div>
+            <div class="card" id="categories-card">
+                <h3>Categories</h3>
+                <p id="categories-count">0</p>
+            </div>
+            <div class="card" id="brands-card">
+                <h3>Brands</h3>
+                <p id="brands-count">0</p>
+            </div>
+            <div class="card" id="orders-card">
+                <h3>Orders</h3>
+                <p id="orders-count">0</p>
+            </div>
+        </section>
+
+        <section class="tables-section">
+            <h2>Products List</h2>
+            <table id="products-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <h2>Orders List</h2>
+            <table id="orders-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Shipped Date</th>
+                        <th>Price</th>
+                        <th>Discount</th>
+                        <th>Status</th>
+                        <th>Dropshipper</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="assets/js/api.js"></script>
+    <script>
+        const API_BASE = 'https://localhost:7000/api/Products';
+        const CAT_API = 'https://localhost:7000/api/Category';
+        const BRAND_API = 'https://localhost:7000/api/Brands';
+        const ORDERS_API = 'https://localhost:7000/api/orders';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+        });
+
+        async function fetchData() {
+            try {
+                // Products
+                const productsRes = await fetch(API_BASE, { headers: getAuthHeaders() });
+                const products = await productsRes.json();
+                document.getElementById('products-count').textContent = products.length;
+                populateProductsTable(products);
+
+                // Categories
+                const categoriesRes = await fetch(CAT_API, { headers: getAuthHeaders() });
+                const categories = await categoriesRes.json();
+                document.getElementById('categories-count').textContent = categories.length;
+
+                // Brands
+                const brandsRes = await fetch(BRAND_API, { headers: getAuthHeaders() });
+                const brands = await brandsRes.json();
+                document.getElementById('brands-count').textContent = brands.length;
+
+                // Orders
+                const ordersRes = await fetch(ORDERS_API, { headers: getAuthHeaders() });
+                const orders = await ordersRes.json();
+                document.getElementById('orders-count').textContent = orders.length;
+                populateOrdersTable(orders);
+
+            } catch (err) {
+                console.error('Error fetching data:', err);
+            }
+        }
+
+        function populateProductsTable(products) {
+            const tbody = document.querySelector('#products-table tbody');
+            tbody.innerHTML = '';
+            products.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td>${p.name}</td>
+          <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '-'}</td>
+        `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function populateOrdersTable(orders) {
+            const tbody = document.querySelector('#orders-table tbody');
+            tbody.innerHTML = '';
+            orders.forEach(o => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td>${o.id}</td>
+          <td>${o.shippedDate ?? '-'}</td>
+          <td>${o.orderPrice.toFixed(2)}</td>
+          <td>${o.orderDiscount.toFixed(2)}</td>
+          <td>${o.orderStatus}</td>
+          <td>${o.dropshipperName ?? '-'}</td>
+        `;
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+
+</body>
+
+</html>

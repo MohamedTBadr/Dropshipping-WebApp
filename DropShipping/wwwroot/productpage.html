@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Page</title>
+    <link rel="stylesheet" href="./home.css">
+    <link rel="stylesheet" href="assets/css/product.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <div class="circle"></div>
+                <a href="index.html" class="headName">
+                    <h1>DropZone</h1>
+                </a>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search product ..." />
+                <button><i class="fa fa-search"></i></button>
+            </div>
+
+            <div class="right-section">
+                <div class="cart">
+                    <a href="ShoppingCart.html"><i class="fa fa-shopping-basket"></i></a>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <a href="#" class="login-link">Logout</a>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li class="dropdown">
+                    <a href="#">All Products <i class="fa fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Phones</a></li>
+                        <li><a href="#">Laptops</a></li>
+                        <li><a href="#">Headphones</a></li>
+                        <li><a href="#">Chargers</a></li>
+                        <li><a href="#">Cables</a></li>
+                        <li><a href="#">TVs</a></li>
+                        <li><a href="#">Home Appliances</a></li>
+                        <li><a href="#">Smartwatches</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#">New Products</a></li>
+                <li><a href="#">Orders</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container1">
+        <div class="product-main">
+            <div class="product-gallery">
+                <div class="main-image-container">
+                    <div class="main-image">
+                        <img id="mainProductImage" src="" alt="Product Image" />
+                        <button class="gallery-arrow gallery-arrow-left" id="mainPrevArrow">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="gallery-arrow gallery-arrow-right" id="mainNextArrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="thumbnail-images" id="thumbnailImages">
+                </div>
+            </div>
+
+            <div class="product-info">
+                <div class="product-header">
+                    <h1 id="productName">Product Name</h1>
+                    <div class="product-brand" id="productBrand">Brand Name</div>
+                </div>
+
+                <div class="product-price">
+                    <span class="current-price" id="productPrice">$0.00</span>
+                    <span class="model-year" id="modelYear">2024</span>
+                </div>
+
+                <div class="product-description" id="productDescription">
+                    Product description will be loaded here...
+                </div>
+
+                <div class="product-actions">
+                    <button class="btn-primary" id="addToCart">
+                        <i class="fas fa-shopping-cart"></i>
+                        Add to Cart
+                    </button>
+                    <button class="btn-secondary" id="downloadImages">
+                        <i class="fas fa-download"></i>
+                        Download Images
+                    </button>
+                </div>
+
+                <div class="product-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">Category:</span>
+                        <span class="spec-value" id="productCategory">Category Name</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Brand:</span>
+                        <span class="spec-value" id="productBrandName">Brand Name</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Model Year:</span>
+                        <span class="spec-value" id="productModelYear">2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="related-products">
+            <div class="related-products-container">
+                <div class="related-header">
+                    <h2>Related Products</h2>
+                    <a href="#" id="seeMoreBtn" class="see-more-btn">
+                        See More <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="products-grid" id="relatedProductsGrid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/product.js"></script>
+    <script src="./assets/js/cart.js"></script>
+    <script src="assets/js/navigation.js"></script>
+</body>
+
+</html>
