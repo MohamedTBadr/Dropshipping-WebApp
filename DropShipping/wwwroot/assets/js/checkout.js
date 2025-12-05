@@ -182,7 +182,7 @@ class CheckoutPage {
                     <p class="text-muted mb-4">Thank you for your order. You will receive a confirmation email shortly.</p>
                     <div class="d-flex gap-3 justify-content-center">
                         <a href="index.html" class="btn btn-primary">Continue Shopping</a>
-                        <a href="dashboard.html" class="btn btn-outline-secondary">View Orders</a>
+                        <a href="../orders.html" class="btn btn-outline-secondary">View Orders</a>
                     </div>
                 </div>
             </div>
