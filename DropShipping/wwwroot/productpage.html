@@ -4,17 +4,499 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Page</title>
+    <title>Product Page | DropZone</title>
     <link rel="stylesheet" href="./home.css">
     <link rel="stylesheet" href="assets/css/product.css">
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <style>
+        /* Enhanced Navbar Styles */
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --secondary: #8338ec;
+            --accent: #ff006e;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f5f7ff;
+            color: var(--dark);
+            padding-top: 120px; /* Account for fixed header */
+        }
+
+        /* Main Header */
+        .main-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+            box-shadow: var(--shadow);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        /* Logo Section */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .circle {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+        }
+
+            .circle::before {
+                content: '';
+                position: absolute;
+                width: 16px;
+                height: 16px;
+                background: white;
+                border-radius: 50%;
+            }
+
+        .headName h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            transition: var(--transition);
+        }
+
+        .headName:hover h1 {
+            transform: translateY(-2px);
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            flex: 0 1 600px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+            .search-bar input {
+                flex: 1;
+                padding: 14px 50px 14px 24px;
+                border: 2px solid var(--light-gray);
+                border-radius: 50px;
+                font-size: 15px;
+                transition: var(--transition);
+                background: white;
+                outline: none;
+            }
+
+                .search-bar input:focus {
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
+                }
+
+            .search-bar button {
+                position: absolute;
+                right: 6px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                color: white;
+                border: none;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: var(--transition);
+            }
+
+                .search-bar button:hover {
+                    transform: translateY(-50%) scale(1.05);
+                    box-shadow: 0 5px 15px rgba(58, 134, 255, 0.4);
+                }
+
+        /* Right Section */
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .cart {
+            position: relative;
+            font-size: 22px;
+        }
+
+            .cart a {
+                color: var(--dark);
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                background: var(--light-gray);
+            }
+
+                .cart a:hover {
+                    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                    color: white;
+                    transform: translateY(-2px);
+                }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(255, 0, 110, 0.3);
+        }
+
+        .login-link {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+            .login-link:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(58, 134, 255, 0.3);
+            }
+
+        /* Main Navigation */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+            .main-nav ul {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                list-style: none;
+                height: 50px;
+                align-items: center;
+            }
+
+            .main-nav li {
+                position: relative;
+                margin-right: 30px;
+            }
+
+            .main-nav a {
+                color: var(--dark);
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 15px;
+                padding: 12px 16px;
+                border-radius: 8px;
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+                .main-nav a:hover {
+                    color: var(--primary);
+                    background: rgba(58, 134, 255, 0.1);
+                }
+
+        /* Dropdown */
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 220px;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 1000;
+            padding: 10px 0;
+        }
+
+            .dropdown-menu li {
+                margin: 0;
+            }
+
+            .dropdown-menu a {
+                padding: 12px 20px;
+                color: var(--dark);
+                font-weight: 500;
+                border-radius: 0;
+                display: block;
+            }
+
+                .dropdown-menu a:hover {
+                    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                    color: white;
+                }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+            .menu-toggle:hover {
+                background: var(--light-gray);
+            }
+
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .search-bar {
+                flex: 0 1 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 140px;
+            }
+
+            .container {
+                height: 60px;
+                padding: 0 15px;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .search-bar {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                margin: 0;
+                padding: 15px;
+                background: white;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                display: none;
+                animation: slideDown 0.3s ease;
+            }
+
+                .search-bar.active {
+                    display: flex;
+                }
+
+            .right-section {
+                gap: 15px;
+            }
+
+            .login-link {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .main-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+                z-index: 999;
+            }
+
+                .main-nav.active {
+                    transform: translateY(0);
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+                .main-nav ul {
+                    flex-direction: column;
+                    height: auto;
+                    padding: 15px;
+                }
+
+                .main-nav li {
+                    width: 100%;
+                    margin: 5px 0;
+                }
+
+                .main-nav a {
+                    padding: 15px;
+                    justify-content: space-between;
+                }
+
+            .dropdown-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                background: var(--light-gray);
+                margin-top: 5px;
+                display: none;
+            }
+
+            .dropdown.active .dropdown-menu {
+                display: block;
+            }
+
+            .dropdown-menu a {
+                padding-left: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .headName h1 {
+                font-size: 22px;
+            }
+
+            .circle {
+                width: 35px;
+                height: 35px;
+            }
+
+            .cart a {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cart-count {
+                width: 20px;
+                height: 20px;
+                font-size: 11px;
+            }
+        }
+
+        /* Notification Badge */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .notification.show {
+                transform: translateX(0);
+            }
+    </style>
 </head>
 
 <body>
+    <!-- Enhanced Header -->
     <header class="main-header">
         <div class="container">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
             <div class="logo">
                 <div class="circle"></div>
                 <a href="index.html" class="headName">
@@ -22,43 +504,60 @@
                 </a>
             </div>
 
-            <div class="search-bar">
-                <input type="text" placeholder="Search product ..." />
+            <div class="search-bar" id="searchBar">
+                <input type="text" placeholder="Search products, brands, categories..." />
                 <button><i class="fa fa-search"></i></button>
             </div>
 
             <div class="right-section">
                 <div class="cart">
-                    <a href="ShoppingCart.html"><i class="fa fa-shopping-basket"></i></a>
+                    <a href="ShoppingCart.html">
+                        <i class="fa fa-shopping-basket"></i>
+                    </a>
                     <span class="cart-count" id="cartCount">0</span>
                 </div>
-                <a href="#" class="login-link">Logout</a>
+                <button class="login-link" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
             </div>
         </div>
 
-        <nav class="main-nav">
+        <nav class="main-nav" id="mainNav">
             <ul>
-                <li class="dropdown">
-                    <a href="#">All Products <i class="fa fa-caret-down"></i></a>
+                <li class="dropdown" id="allProductsDropdown">
+                    <a href="#">
+                        <i class="fas fa-boxes"></i>
+                        All Products
+                        <i class="fa fa-caret-down"></i>
+                    </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Phones</a></li>
-                        <li><a href="#">Laptops</a></li>
-                        <li><a href="#">Headphones</a></li>
-                        <li><a href="#">Chargers</a></li>
-                        <li><a href="#">Cables</a></li>
-                        <li><a href="#">TVs</a></li>
-                        <li><a href="#">Home Appliances</a></li>
-                        <li><a href="#">Smartwatches</a></li>
+                        <li><a href="#"><i class="fas fa-mobile-alt"></i> Phones</a></li>
+                        <li><a href="#"><i class="fas fa-laptop"></i> Laptops</a></li>
+                        <li><a href="#"><i class="fas fa-headphones"></i> Headphones</a></li>
+                        <li><a href="#"><i class="fas fa-bolt"></i> Chargers</a></li>
+                        <li><a href="#"><i class="fas fa-plug"></i> Cables</a></li>
+                        <li><a href="#"><i class="fas fa-tv"></i> TVs</a></li>
+                        <li><a href="#"><i class="fas fa-home"></i> Home Appliances</a></li>
+                        <li><a href="#"><i class="fas fa-clock"></i> Smartwatches</a></li>
                     </ul>
                 </li>
 
-                <li><a href="#">New Products</a></li>
-                <li><a href="#">Orders</a></li>
-                <li><a href="#">Profile</a></li>
+                <li><a href="#"><i class="fas fa-star"></i> New Products</a></li>
+                <li><a href="#"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="#"><i class="fas fa-tag"></i> Deals</a></li>
             </ul>
         </nav>
     </header>
 
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Item added to cart!</span>
+    </div>
+
+    <!-- Existing Product Content -->
     <div class="container1">
         <div class="product-main">
             <div class="product-gallery">
@@ -134,9 +633,157 @@
         </div>
     </div>
 
+    <!-- Navbar JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const mainNav = document.getElementById('mainNav');
+            const searchBar = document.getElementById('searchBar');
+            const allProductsDropdown = document.getElementById('allProductsDropdown');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const notification = document.getElementById('notification');
+            const cartCount = document.getElementById('cartCount');
+
+            // Mobile menu functionality
+            menuToggle.addEventListener('click', function () {
+                mainNav.classList.toggle('active');
+                searchBar.classList.toggle('active');
+                menuToggle.innerHTML = mainNav.classList.contains('active') ?
+                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-bar input');
+            const searchButton = document.querySelector('.search-bar button');
+
+            searchButton.addEventListener('click', function () {
+                if (searchInput.value.trim()) {
+                    alert(`Searching for: ${searchInput.value}`);
+                    searchInput.value = '';
+                }
+            });
+
+            searchInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    searchButton.click();
+                }
+            });
+
+            // Mobile dropdown toggle
+            if (window.innerWidth <= 768) {
+                allProductsDropdown.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    this.classList.toggle('active');
+                });
+            }
+
+            // Cart functionality
+            let cartItems = 0;
+
+            // Update cart count from localStorage
+            function updateCartCount() {
+                const savedCart = localStorage.getItem('dropzoneCart');
+                if (savedCart) {
+                    cartItems = JSON.parse(savedCart).length;
+                }
+                cartCount.textContent = cartItems;
+            }
+
+            // Show notification
+            function showNotification(message) {
+                document.getElementById('notificationText').textContent = message;
+                notification.classList.add('show');
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+
+            // Add to cart functionality
+            const addToCartBtn = document.getElementById('addToCart');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function () {
+                    cartItems++;
+                    cartCount.textContent = cartItems;
+
+                    // Save to localStorage
+                    const cartItem = {
+                        id: Date.now(),
+                        name: document.getElementById('productName').textContent,
+                        price: document.getElementById('productPrice').textContent,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    const savedCart = localStorage.getItem('dropzoneCart');
+                    let cart = savedCart ? JSON.parse(savedCart) : [];
+                    cart.push(cartItem);
+                    localStorage.setItem('dropzoneCart', JSON.stringify(cart));
+
+                    showNotification('Product added to cart!');
+
+                    // Animation
+                    cartCount.style.transform = 'scale(1.3)';
+                    setTimeout(() => {
+                        cartCount.style.transform = 'scale(1)';
+                    }, 300);
+                });
+            }
+
+            // Logout functionality
+            logoutBtn.addEventListener('click', function () {
+                if (confirm('Are you sure you want to logout?')) {
+                    showNotification('Logged out successfully!');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                }
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.main-header')) {
+                    mainNav.classList.remove('active');
+                    searchBar.classList.remove('active');
+                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+
+            // Initialize cart count
+            updateCartCount();
+
+            // Search focus on desktop
+            if (window.innerWidth > 768) {
+                document.addEventListener('keydown', function (e) {
+                    if (e.ctrlKey && e.key === '/') {
+                        e.preventDefault();
+                        searchInput.focus();
+                    }
+                });
+            }
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            window.scrollTo({
+                                top: target.offsetTop - 120,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Existing Scripts -->
     <script src="assets/js/product.js"></script>
     <script src="./assets/js/cart.js"></script>
     <script src="assets/js/navigation.js"></script>
 </body>
-
 </html>

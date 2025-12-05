@@ -1,221 +1,326 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DropZone - Home</title>
-    <link rel="stylesheet" href="./home.css">
+    <title>DropZone - Premium Tech Marketplace</title>
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
 
+        body {
+            background: #f3f7ff;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: #fff;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: #1e3a8a;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+            .search-bar input {
+                width: 280px;
+                padding: .6rem 1rem;
+                border-radius: 50px;
+                border: 1px solid #d0d7e4;
+                outline: none;
+            }
+
+                .search-bar input:focus {
+                    border-color: #3b82f6;
+                    box-shadow: 0 0 10px rgba(59,130,246,0.25);
+                }
+
+            .search-bar button {
+                background: #3b82f6;
+                border: none;
+                padding: .6rem 1rem;
+                border-radius: 50px;
+                color: white;
+                cursor: pointer;
+            }
+
+        .right-section a {
+            margin-left: 1rem;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .cart-count {
+            background: #1e3a8a;
+            color: white;
+            padding: 3px 7px;
+            border-radius: 50%;
+            margin-left: -12px;
+            font-size: .7rem;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(to right,#1e3a8a,#3b82f6);
+            color: white;
+            gap: 3rem;
+        }
+
+            .hero img {
+                max-width: 420px;
+                border-radius: 20px;
+                box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+                animation: float 4s infinite ease-in-out;
+            }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .hero p {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            opacity: .9;
+        }
+
+        .btn-hero {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: .9rem 2.5rem;
+            background: white;
+            color: #1e3a8a;
+            font-weight: 700;
+            border-radius: 50px;
+            font-size: 1.1rem;
+        }
+
+            .btn-hero:hover {
+                background: #cbd5e1;
+            }
+
+        .features {
+            margin-top: -80px;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .feature {
+            background: rgba(255,255,255,0.65);
+            padding: 1.5rem;
+            width: 280px;
+            border-radius: 20px;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 10px 30px rgba(30,58,138,0.15);
+            transition: .3s;
+        }
+
+            .feature:hover {
+                transform: translateY(-8px);
+            }
+
+            .feature i {
+                font-size: 2.5rem;
+                color: #3b82f6;
+                margin-bottom: .7rem;
+            }
+
+        .categories {
+            padding: 3rem 2rem;
+        }
+
+            .categories h2 {
+                text-align: center;
+                margin-bottom: 2rem;
+                font-size: 2rem;
+                font-weight: 700;
+                color: #1e3a8a;
+            }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
+            gap: 1.5rem;
+        }
+
+        .category-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            text-align: center;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+            .category-item:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 35px rgba(59,130,246,0.20);
+            }
+
+            .category-item img {
+                width: 100%;
+                height: 130px;
+                object-fit: contain;
+                margin-bottom: .6rem;
+            }
+
+            .category-item h3 {
+                font-size: 1.1rem;
+                color: #1e3a8a;
+            }
+
+        footer {
+            padding: 2rem;
+            background: #1e3a8a;
+            color: white;
+            text-align: center;
+            letter-spacing: .5px;
+        }
+
+        @media(max-width:768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-
-    <header class="main-header">
+    <header>
         <div class="container">
-            <!-- Logo -->
-            <div class="logo">
-                <div class="circle"></div>
-                <a href="index.html" class="headName">
-                    <h1>DropZone</h1>
-                </a>
-            </div>
-
-            <!-- Search Bar -->
+            <a href="index.html" class="logo"><h1>DropZone</h1></a>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search product ..." />
+                <input id="searchInput" type="text" placeholder="Search products..." />
                 <button id="searchBtn"><i class="fa fa-search"></i></button>
             </div>
-
             <div class="right-section">
-                <div class="cart">
-                    <a href="ShoppingCart.html"><i class="fa fa-shopping-basket"></i></a>
-                    <span class="cart-count" id="cartCount">0</span>
-                </div>
-                <a href="#" class="login-link">Logout</a>
+                <a href="ShoppingCart.html"><i class="fa fa-cart-shopping"></i></a>
+                <span class="cart-count" id="cartCount">0</span>
+                <a href="#">Logout</a>
             </div>
         </div>
-
-        <nav class="main-nav">
-            <ul>
-                <li class="dropdown">
-                    <a href="#">All Products <i class="fa fa-caret-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Loading...</a></li>
-                    </ul>
-                </li>
-
-                <!--<li><a href="#">New Products</a></li>-->
-                <li><a href="./orders.html">Orders</a></li>
-                <li><a href="DropshipperProfile.html">Profile</a></li>
-            </ul>
-        </nav>
-
     </header>
 
     <section class="hero">
-        <div class="hero-image">
-            <img src="./images/HeroImage (2).png" alt="TV setup" />
-        </div>
-
-        <div class="hero-content">
-            <h1>Global Electronics Dropshipping Made Simple</h1>
-            <p>
-                We connect you to trusted manufacturers and trending tech products — scale your business without
-                inventory or
-                logistics stress.
-            </p>
-            <a href="#" class="btn">View Latest Products</a>
+        <img src="./images/HeroImage (2).png" alt="Product Hero">
+        <div>
+            <h1>The Ultimate Dropshipping Hub For Trending Electronics</h1>
+            <p>Discover premium gadgets, live inventory, and fast fulfillment — all in one advanced platform.</p>
+            <a class="btn-hero" href="#">Explore Products</a>
         </div>
     </section>
 
     <section class="features">
         <div class="feature">
-            <i class="fa fa-truck"></i>
-            <div>
-                <h4>Inventory tracking</h4>
-                <p>Live stock updates</p>
-            </div>
+            <i class="fa fa-chart-line"></i>
+            <h4>Live Inventory Tracking</h4>
+            <p>Always up-to-date stock.</p>
         </div>
-
         <div class="feature">
-            <i class="fa fa-comments"></i>
-            <div>
-                <h4>We are available 24/7</h4>
-                <p>Need help? Contact us anytime</p>
-            </div>
+            <i class="fa fa-headset"></i>
+            <h4>24/7 Support Team</h4>
+            <p>We’re always here to help.</p>
         </div>
-
         <div class="feature">
             <i class="fa fa-rotate-left"></i>
-            <div>
-                <h4>Satisfied or return</h4>
-                <p>Easy 30-day return policy</p>
-            </div>
+            <h4>Easy Returns</h4>
+            <p>30-Day hassle-free policy.</p>
         </div>
-
-
     </section>
 
     <section class="categories">
-        <div class="category-grid">
-            <h2>Shop by Category</h2>
-
-            <div class="category-item">
-                <img src="./images/Phones2.png" alt="Phones" />
-                <h3>Phones</h3>
-                <p>4 PRODUCTS</p>
-            </div>
-
-            <div class="category-item">
-                <img src="./images/laptopsCategory.png" alt="Laptops" />
-                <h3>Laptops</h3>
-                <p>5 PRODUCTS</p>
-            </div>
-
-            <div class="category-item">
-                <img src="./images/HeadphoneCategory.png" alt="Headphones" />
-                <h3>Headphones</h3>
-                <p>6 PRODUCTS</p>
-            </div>
-
-            <div class="category-item">
-                <img src="./images/ChargersCategory.png" alt="Chargers" />
-                <h3>Chargers</h3>
-                <p>5 PRODUCTS</p>
-            </div>
-
-            <div class="category-item">
-                <img src="./images/Cables.png" alt="Cables" />
-                <h3>Cables</h3>
-                <p>6 PRODUCTS</p>
-            </div>
-
-            <div class="category-item">
-                <img src="./images/TelevisionsCategory.png" alt="Televisions" />
-                <h3>TVs</h3>
-                <p>4 PRODUCTS</p>
-            </div>
-
-            <div class="category-item">
-                <img src="./images/HomeAppliancesCategory.png" alt="HomeAppliances" />
-                <h3>Home Appliances</h3>
-                <p>4 PRODUCTS</p>
-            </div>
-
-            <div class="category-item">
-                <img src="./images/SmartWatchesCategory.png" alt="SmartWatches" />
-                <h3>Smartwatches</h3>
-                <p>5 PRODUCTS</p>
-            </div>
-        </div>
-    </section>
-    <section class="new-products">
-        <div class="product-grid" id="newProductsContainer">
-            <h2>Products</h2>
-            <a href="#" class="see-more">See more</a>
+        <h2>Shop by Category</h2>
+        <div class="category-grid" id="categoryContainer">
+            <!-- JS will append categories here -->
         </div>
     </section>
 
-    <footer class="footer">
-        <p>© 2025 Dropshipping. All rights reserved.</p>
+    <footer>
+        <p>© 2025 DropZone. All rights reserved.</p>
     </footer>
-    <script src="./assets/js/navigation.js"></script>
-    <script src="./assets/js/api.js"></script>
+
     <script>
-        async function loadNewestProducts() {
-            const container = document.getElementById("newProductsContainer");
+        const API_CATEGORY = "https://localhost:7000/api/Category";
+        const categoryContainer = document.querySelector("#categoryContainer");
 
+        async function loadCategories() {
             try {
-                const response = await fetch("https://localhost:7000/api/Products?pageIndex=1&pageSize=4", { headers: getAuthHeaders() });
-                const data = await response.json();
-
-                const products = data.result;
-
-                // Remove old static items if they exist
-                container.querySelectorAll(".product-item").forEach(item => item.remove());
-
-                products.forEach(product => {
-                    const item = document.createElement("div");
-                    item.classList.add("product-item");
-
-                    item.innerHTML = `
-                      <div class="product-item-image">
-                          <img src="${product.images?.[0] ?? './images/default.png'}" alt="${product.name}" />
-                      </div>
-                      <div class="product-item-info">
-                          <h3>${product.name}</h3>
-                          <p>$${product.price}</p>
-                      </div>
-                  `;
-
-                    container.appendChild(item);
-                });
-
+                const response = await fetch(API_CATEGORY);
+                if (!response.ok) throw new Error("Categories fetch failed");
+                const categories = await response.json();
+                renderCategories(categories);
             } catch (error) {
-                console.error("Error loading products:", error);
+                console.error(error);
+                if (categoryContainer) categoryContainer.innerHTML = "<p>Failed to load categories</p>";
             }
         }
 
-        document.addEventListener("DOMContentLoaded", loadNewestProducts);
-        // header search behavior: redirect to search page with query q
-        (function () {
-            const input = document.querySelector('.search-bar input');
-            const btn = document.querySelector('.search-bar button');
-            if (!input) return;
-            const submit = () => {
-                const term = (input.value || '').trim();
-                if (!term) return;
-                window.location.href = `search.html?q=${encodeURIComponent(term)}`;
-            };
-            btn?.addEventListener('click', submit);
-            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
-        })();
+        function renderCategories(categories) {
+            if (!categoryContainer) return;
+            categoryContainer.innerHTML = "";
+            categories.forEach(cat => {
+                const div = document.createElement("div");
+                div.className = "category-item";
+                div.dataset.id = cat.id;
+                div.innerHTML = `<img src="./images/Phones2.png"><h3>${cat.name}</h3>`;
+                div.addEventListener("click", () => {
+                    window.location.href = `Products.html?categoryId=${cat.id}&categoryName=${encodeURIComponent(cat.name)}`;
+                });
+                categoryContainer.appendChild(div);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", loadCategories);
     </script>
 
-    <script src="./assets/js/cart.js"></script>
 </body>
-
 </html>
