@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (confirm('Are you sure you want to logout?')) {
             showNotification('Logged out successfully!');
             setTimeout(() => {
-                window.location.href = 'login.html';
+                window.location.href = '../loginregistration.html';
             }, 1500);
         }
     });
