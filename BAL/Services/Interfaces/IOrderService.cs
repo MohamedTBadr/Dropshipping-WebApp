@@ -14,7 +14,7 @@ namespace BAL.Services.Interfaces
         
         Task<OrderDetailsDTO> GetOrderByIdAsync(Guid id);
 
-        Task UpdateOrderAsync(OrderUpdateDTO updateDto);
+        Task UpdateOrderAsync(Guid id,OrderUpdateDTO updateDto);
 
         Task DeleteOrderAsync(Guid id);
 

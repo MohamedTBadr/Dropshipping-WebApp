@@ -10,7 +10,7 @@ namespace DAL.Repositories.Interfaces
     public interface IOrderRepository
     {
         Task AddAsync(Order order);
-        void UpdateAsync(Order order);
+        Task UpdateAsync(string dropshipperId,Order order);
         Task DeleteAsync(Guid id);
         Task<Order> GetById(Guid id);
 

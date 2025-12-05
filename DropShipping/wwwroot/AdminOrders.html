@@ -9,6 +9,238 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/index.css" />
+    <style>
+        /* Custom styles for orders page */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-declined {
+            background-color: #fee;
+            color: #d32f2f;
+        }
+
+        .status-delivering {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .btn-icon {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text);
+            margin-left: 4px;
+            transition: all 0.2s;
+        }
+
+            .btn-icon:hover {
+                background-color: var(--hover-bg);
+                border-color: var(--primary);
+            }
+
+        .btn-status-edit {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 4px;
+            margin-left: 4px;
+            border-radius: 4px;
+        }
+
+            .btn-status-edit:hover {
+                background-color: rgba(0, 123, 255, 0.1);
+            }
+
+        /* Modal styles */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+            .overlay.show {
+                opacity: 1;
+            }
+
+        .modal {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(-20px);
+            transition: transform 0.3s;
+        }
+
+        .overlay.show .modal {
+            transform: translateY(0);
+        }
+
+        .modal-title {
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .view-content > div {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+            .view-content > div:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+
+        .view-content strong {
+            display: inline-block;
+            min-width: 120px;
+            color: var(--muted);
+        }
+
+        /* Status Edit Modal */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 6px;
+                font-weight: 500;
+                color: var(--text);
+            }
+
+            .form-group select,
+            .form-group input {
+                width: 100%;
+                padding: 8px 12px;
+                border: 1px solid var(--border);
+                border-radius: 4px;
+                font-size: 14px;
+            }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.3s, transform 0.3s;
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+            .notification.show {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            .notification.success {
+                background-color: #4CAF50;
+            }
+
+            .notification.error {
+                background-color: #f44336;
+            }
+
+        /* Pagination */
+        .btn-page {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+            .btn-page:hover:not(:disabled) {
+                background-color: var(--hover-bg);
+                border-color: var(--primary);
+            }
+
+            .btn-page.active {
+                background-color: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+
+            .btn-page:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+        /* Loading */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
     <script>
         // --- Access control ---
         const userType = localStorage.getItem("userType");
@@ -20,138 +252,658 @@
     </script>
 
 </head>
-            <body>
+<body>
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
 
-                <!-- SIDEBAR -->
-                <div class="sidebar" id="sidebar">
-                    <div class="sidebar-header">
-                        <h2><i class="fas fa-chart-line"></i> <span>AdminPanel</span></h2>
-                    </div>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-chart-line"></i> <span>AdminPanel</span></h2>
+        </div>
 
-                    <div class="sidebar-menu">
-                        <ul>
-                            <li><a href="dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
-                            <li><a href="AdminProducts.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
-                            <li><a href="AdminCategory.html"><i class="fas fa-tags"></i> <span>Categories</span></a></li>
-                            <li><a href="AdminBrands.html"><i class="fas fa-star"></i> <span>Brands</span></a></li>
-                            <li class="active"><a href="AdminOrders.html"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
-                            <li><a href="AdminDropshipper.html"><i class="fas fa-users"></i> <span>Customers</span></a></li>
-                            <li><a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
-                        </ul>
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="AdminProducts.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+                <li><a href="AdminCategory.html"><i class="fas fa-tags"></i> <span>Categories</span></a></li>
+                <li><a href="AdminBrands.html"><i class="fas fa-star"></i> <span>Brands</span></a></li>
+                <li class="active"><a href="AdminOrders.html"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
+                <li><a href="AdminDropshipper.html"><i class="fas fa-users"></i> <span>Customers</span></a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Orders — Admin</h1>
+                <div class="muted" style="font-size:13px;margin-top:6px;">Search & manage orders (API-driven)</div>
+            </div>
+
+            <div class="header-right">
+                <div class="search" title="Search">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 21l-4.35-4.35"></path>
+                        <circle cx="11" cy="11" r="6"></circle>
+                    </svg>
+                    <input id="searchInput" placeholder="Search orders..." />
+                </div>
+
+                <div class="user-profile" style="margin-left:8px;">
+                    <div class="user-avatar">A</div>
+                    <div class="muted" style="font-size:14px;">Admin</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT -->
+        <div class="content">
+            <div class="container">
+
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+                    <div>
+                        <h1 style="margin:0;">Orders</h1>
+                        <div class="muted">Search & manage orders (API-driven)</div>
                     </div>
                 </div>
 
-                <!-- MAIN WRAPPER -->
-                <div class="main">
+                <table aria-label="Orders table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Products</th>
+                            <th>Dropshipper</th>
+                            <th>Customer</th>
+                            <th>Address</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Status</th>
+                            <th>Shipped Date</th>
+                            <th style="text-align:right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        <!-- rows come from AdminOrders.js -->
+                    </tbody>
+                </table>
 
-                    <!-- HEADER -->
-                    <header class="header">
-                        <div class="header-left">
-                            <h1>Orders — Admin</h1>
-                            <div class="muted" style="font-size:13px;margin-top:6px;">Search & manage orders (API-driven)</div>
-                        </div>
+                <div id="pagination" style="margin-top:20px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap;"></div>
 
-                        <div class="header-right">
-                            <div class="search" title="Search">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 21l-4.35-4.35"></path>
-                                    <circle cx="11" cy="11" r="6"></circle>
-                                </svg>
-                                <input id="searchInput" placeholder="Search orders..." />
-                            </div>
+            </div>
+        </div>
+    </div>
 
-                            <div class="user-profile" style="margin-left:8px;">
-                                <div class="user-avatar">A</div>
-                                <div class="muted" style="font-size:14px;">Admin</div>
-                            </div>
-                        </div>
-                    </header>
+    <!-- View Modal -->
+    <div class="overlay" id="viewOverlay">
+        <div class="modal view-modal" style="width: 800px; max-width:95%;">
+            <h2 class="modal-title">Order Details</h2>
+            <div class="view-content">
+                <div><strong>Products:</strong> <span id="viewProducts"></span></div>
+                <div><strong>Dropshipper:</strong> <span id="viewDropshipper"></span></div>
+                <div><strong>Customer:</strong> <span id="viewCustomer"></span></div>
+                <div><strong>Address:</strong> <span id="viewAddress"></span></div>
+                <div><strong>Price:</strong> $<span id="viewPrice"></span></div>
+                <div><strong>Discount:</strong> $<span id="viewDiscount"></span></div>
+                <div><strong>Status:</strong> <span id="viewStatus"></span></div>
+                <div><strong>Shipped Date:</strong> <span id="viewShipped"></span></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-muted" id="closeView">Close</button>
+            </div>
+        </div>
+    </div>
 
-                    <!-- CONTENT -->
-                    <div class="content">
-                        <div class="container">
+    <!-- Edit Status & Shipped Date Modal -->
+    <div class="overlay" id="editOverlay">
+        <div class="modal" style="max-width:500px">
+            <h2>Edit Order Status</h2>
+            <div class="form-group">
+                <label>Status:</label>
+                <select id="editStatus" class="form-control">
+                    <option value="0">Declined</option>
+                    <option value="1">Delivering</option>
+                    <option value="2">Delivered</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Shipped Date:</label>
+                <input type="date" id="editShippedDate" class="form-control" />
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
+                <button class="btn-muted" id="cancelEdit">Cancel</button>
+                <button class="btn-primary" id="saveEdit">Save Changes</button>
+            </div>
+        </div>
+    </div>
 
-                            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-                                <div>
-                                    <h1 style="margin:0;">Orders</h1>
-                                    <div class="muted">Search & manage orders (API-driven)</div>
-                                </div>
-                            </div>
-
-                            <table aria-label="Orders table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Products</th>
-                                        <th>Dropshipper</th>
-                                        <th>Customer</th>
-                                        <th>Address</th>
-                                        <th>Price</th>
-                                        <th>Discount</th>
-                                        <th>Status</th>
-                                        <th>Shipped Date</th>
-                                        <th style="text-align:right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody">
-                                    <!-- rows come from AdminOrders.js -->
-                                </tbody>
-                            </table>
-
-                            <div id="pagination" style="margin-top:20px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap;"></div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- View Modal -->
-                <div class="overlay" id="viewOverlay">
-                    <div class="modal view-modal" style="width: 800px; max-width:95%;">
-                        <h2 class="modal-title">Order Details</h2>
-                        <div class="view-content">
-                            <div><strong>Products:</strong> <span id="viewProducts"></span></div>
-                            <div><strong>Dropshipper:</strong> <span id="viewDropshipper"></span></div>
-                            <div><strong>Customer:</strong> <span id="viewCustomer"></span></div>
-                            <div><strong>Address:</strong> <span id="viewAddress"></span></div>
-                            <div><strong>Price:</strong> $<span id="viewPrice"></span></div>
-                            <div><strong>Discount:</strong> $<span id="viewDiscount"></span></div>
-                            <div><strong>Status:</strong> <span id="viewStatus"></span></div>
-                            <div><strong>Shipped Date:</strong> <span id="viewShipped"></span></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn-muted" id="closeView">Close</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Delete Confirm Modal -->
-                <div class="overlay" id="deleteOverlay">
-                    <div class="modal" style="max-width:420px">
-                        <h2>Delete order?</h2>
-                        <div id="deleteMsg" style="color:var(--muted);margin-top:8px">Are you sure?</div>
-                        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
-                            <button class="btn-muted" id="cancelDelete">Cancel</button>
-                            <button class="btn-primary" id="confirmDelete">Delete</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AdminOrders.js -->
-                <script src="JS/AdminOrders.js"></script>
+    <!-- Delete Confirm Modal -->
+    <div class="overlay" id="deleteOverlay">
+        <div class="modal" style="max-width:420px">
+            <h2>Delete order?</h2>
+            <div id="deleteMsg" style="color:var(--muted);margin-top:8px">Are you sure?</div>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
+                <button class="btn-muted" id="cancelDelete">Cancel</button>
+                <button class="btn-primary" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-                // Optional: toggle sidebar on key press
-                document.addEventListener('keydown', (e) => {
-                    if (e.key.toLowerCase() === 'm') document.getElementById('sidebar').classList.toggle('collapsed');
+        // ==================== AdminOrders.js ====================
+        const API_ORDERS = "https://localhost:7000/api/order";
+        const tbody = document.getElementById('tbody');
+        const searchInput = document.getElementById('searchInput');
+        const paginationContainer = document.getElementById('pagination');
+        const loadingEl = document.getElementById('loading');
+
+        const overlayView = document.getElementById('viewOverlay');
+        const overlayEdit = document.getElementById('editOverlay');
+        const overlayDelete = document.getElementById('deleteOverlay');
+
+        const viewProducts = document.getElementById('viewProducts');
+        const viewDropshipper = document.getElementById('viewDropshipper');
+        const viewCustomer = document.getElementById('viewCustomer');
+        const viewAddress = document.getElementById('viewAddress');
+        const viewPrice = document.getElementById('viewPrice');
+        const viewDiscount = document.getElementById('viewDiscount');
+        const viewStatus = document.getElementById('viewStatus');
+        const viewShipped = document.getElementById('viewShipped');
+        const closeViewBtn = document.getElementById('closeView');
+
+        const editStatus = document.getElementById('editStatus');
+        const editShippedDate = document.getElementById('editShippedDate');
+        const cancelEditBtn = document.getElementById('cancelEdit');
+        const saveEditBtn = document.getElementById('saveEdit');
+
+        const deleteMsg = document.getElementById('deleteMsg');
+        const confirmDeleteBtn = document.getElementById('confirmDelete');
+        const cancelDeleteBtn = document.getElementById('cancelDelete');
+
+        let deleteId = null;
+        let editId = null;
+        let currentPage = 1;
+        const pageSize = 10;
+        let allOrders = [];
+        let filteredOrders = [];
+        let currentSearch = '';
+
+        // ----------------- Auth Headers -----------------
+        function authHeaders() {
+            const token = localStorage.getItem("token");
+            return {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            };
+        }
+
+        // ----------------- Escape HTML -----------------
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"'`=\/]/g, s => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+                "/": "&#x2F;",
+                "`": "&#x60;",
+                "=": "&#x3D;"
+            }[s]));
+        }
+
+        // ----------------- Get Status Badge Class -----------------
+        function getStatusClass(status) {
+            switch (parseInt(status)) {
+                case 0: return 'status-declined';
+                case 1: return 'status-delivering';
+                case 2: return 'status-delivered';
+                default: return 'status-declined';
+            }
+        }
+
+        // ----------------- Get Status Text -----------------
+        function getStatusText(status) {
+            switch (parseInt(status)) {
+                case 0: return 'Declined';
+                case 1: return 'Delivering';
+                case 2: return 'Delivered';
+                default: return 'Declined';
+            }
+        }
+
+        // ----------------- Show Loading -----------------
+        function showLoading() {
+            if (loadingEl) loadingEl.style.display = 'flex';
+        }
+
+        // ----------------- Hide Loading -----------------
+        function hideLoading() {
+            if (loadingEl) loadingEl.style.display = 'none';
+        }
+
+        // ----------------- Show Notification -----------------
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                                <span>${message}</span>
+                            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // ----------------- Render Row with Edit Icons -----------------
+        function renderRow(order, index) {
+            const startIndex = (currentPage - 1) * pageSize;
+            const actualIndex = startIndex + index + 1;
+
+            const productNames = order.items?.length > 0
+                ? order.items.map(i => i.productName || "Unnamed").join(", ")
+                : "No products";
+
+            const shippedDate = order.shippedDate ? new Date(order.shippedDate).toLocaleDateString() : "Not shipped";
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                                <td>${actualIndex}</td>
+                                <td title="${escapeHtml(productNames)}">${escapeHtml(productNames.length > 50 ? productNames.substring(0, 50) + '...' : productNames)}</td>
+                                <td>${escapeHtml(order.dropshipperName || "Unknown")}</td>
+                                <td>${escapeHtml(order.customerName || "Unknown")}</td>
+                                <td>${escapeHtml(order.customerAddress || "Unknown")}</td>
+                                <td>$${order.orderPrice?.toFixed(2) || "0.00"}</td>
+                                <td>$${order.orderDiscount?.toFixed(2) || "0.00"}</td>
+                                <td>
+                                    <span class="status-badge ${getStatusClass(order.orderStatus)}">
+                                        ${getStatusText(order.orderStatus)}
+                                    </span>
+                                    <button class="btn-status-edit" data-id="${order.id}" title="Edit Status">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    ${shippedDate}
+                                    ${order.shippedDate ? `
+                                        <button class="btn-status-edit" data-id="${order.id}" data-field="shippedDate" title="Edit Shipped Date">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    ` : `
+                                        <button class="btn-status-edit" data-id="${order.id}" data-field="shippedDate" title="Add Shipped Date">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    `}
+                                </td>
+                                <td style="text-align:right">
+                                    <button class="btn-icon viewBtn" data-id="${order.id}" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-icon delBtn" data-id="${order.id}" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            `;
+            return tr;
+        }
+
+        // ----------------- Render Table -----------------
+        function renderTable(orders) {
+            tbody.innerHTML = '';
+            if (!orders.length) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:gray;padding:20px;">No orders found.</td></tr>`;
+                return;
+            }
+            orders.forEach((order, index) => tbody.appendChild(renderRow(order, index)));
+            attachRowEvents();
+        }
+
+        // ----------------- Attach Row Events -----------------
+        function attachRowEvents() {
+            // View buttons
+            tbody.querySelectorAll(".viewBtn").forEach(btn =>
+                btn.addEventListener('click', () => openViewModal(btn.dataset.id))
+            );
+
+            // Delete buttons
+            tbody.querySelectorAll(".delBtn").forEach(btn =>
+                btn.addEventListener('click', () => openDeleteModal(btn.dataset.id))
+            );
+
+            // Status edit buttons
+            tbody.querySelectorAll(".btn-status-edit").forEach(btn =>
+                btn.addEventListener('click', (e) => {
+                    const orderId = btn.dataset.id;
+                    const field = btn.dataset.field;
+
+                    if (field === 'shippedDate') {
+                        openEditModal(orderId, 'shippedDate');
+                    } else {
+                        openEditModal(orderId, 'status');
+                    }
+                })
+            );
+        }
+
+        // ----------------- Fetch Orders -----------------
+        async function fetchOrders(page = 1) {
+            try {
+                showLoading();
+                const res = await fetch(`${API_ORDERS}?page=${page}&pageSize=${pageSize}`, {
+                    headers: authHeaders()
+                });
+                if (!res.ok) throw new Error("Failed to fetch orders");
+
+                const data = await res.json();
+                allOrders = data.result || [];
+
+                // Apply search filter if any
+                if (currentSearch) {
+                    filteredOrders = allOrders.filter(order =>
+                        (order.dropshipperName && order.dropshipperName.toLowerCase().includes(currentSearch)) ||
+                        (order.customerName && order.customerName.toLowerCase().includes(currentSearch)) ||
+                        (order.customerAddress && order.customerAddress.toLowerCase().includes(currentSearch)) ||
+                        (order.items && order.items.some(item =>
+                            item.productName && item.productName.toLowerCase().includes(currentSearch)
+                        ))
+                    );
+                } else {
+                    filteredOrders = [...allOrders];
+                }
+
+                renderTable(filteredOrders);
+
+                const totalCount = currentSearch ? filteredOrders.length : (data.totalCount || 0);
+                renderPagination(page, totalCount, pageSize);
+            } catch (err) {
+                console.error(err);
+                showNotification('Failed to load orders.', 'error');
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:red;padding:20px;">Failed to load orders.</td></tr>`;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ----------------- Render Pagination -----------------
+        function renderPagination(pageIndex, totalCount, pageSize) {
+            paginationContainer.innerHTML = '';
+            const totalPages = Math.ceil(totalCount / pageSize);
+            if (totalPages <= 1) return;
+
+            const createButton = (text, page, disabled = false) => {
+                const btn = document.createElement('button');
+                btn.textContent = text;
+                btn.className = `btn-page ${page === pageIndex ? 'active' : ''}`;
+                btn.disabled = disabled;
+                btn.addEventListener('click', () => {
+                    currentPage = page;
+                    fetchOrders(page);
+                });
+                return btn;
+            };
+
+            // Previous button
+            if (pageIndex > 1) {
+                paginationContainer.appendChild(createButton('«', pageIndex - 1));
+            }
+
+            // Page numbers
+            const maxVisible = 5;
+            let startPage = Math.max(1, pageIndex - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+            if (endPage - startPage + 1 < maxVisible) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            if (startPage > 1) {
+                paginationContainer.appendChild(createButton('1', 1));
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.style.padding = '6px';
+                    ellipsis.style.color = 'var(--muted)';
+                    paginationContainer.appendChild(ellipsis);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationContainer.appendChild(createButton(i, i));
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.style.padding = '6px';
+                    ellipsis.style.color = 'var(--muted)';
+                    paginationContainer.appendChild(ellipsis);
+                }
+                paginationContainer.appendChild(createButton(totalPages, totalPages));
+            }
+
+            // Next button
+            if (pageIndex < totalPages) {
+                paginationContainer.appendChild(createButton('»', pageIndex + 1));
+            }
+        }
+
+        // ----------------- View Modal -----------------
+        function openViewModal(id) {
+            const order = allOrders.find(o => o.id === id);
+            if (!order) return;
+
+            const productNames = order.items?.map(i => i.productName).join(", ") || "No products";
+            const shippedDate = order.shippedDate ? new Date(order.shippedDate).toLocaleDateString() : "Not shipped";
+
+            viewProducts.textContent = productNames;
+            viewDropshipper.textContent = order.dropshipperName || "Unknown";
+            viewCustomer.textContent = order.customerName || "Unknown";
+            viewAddress.textContent = order.customerAddress || "Unknown";
+            viewPrice.textContent = order.orderPrice?.toFixed(2) || "0.00";
+            viewDiscount.textContent = order.orderDiscount?.toFixed(2) || "0.00";
+            viewStatus.textContent = getStatusText(order.orderStatus);
+            viewStatus.className = `status-badge ${getStatusClass(order.orderStatus)}`;
+            viewShipped.textContent = shippedDate;
+
+            overlayView.style.display = 'flex';
+            setTimeout(() => overlayView.classList.add('show'), 10);
+        }
+
+        // ----------------- Edit Modal -----------------
+        function openEditModal(id, field = 'status') {
+            const order = allOrders.find(o => o.id === id);
+            if (!order) return;
+
+            editId = id;
+
+            // Set current values
+            editStatus.value = order.orderStatus || 0;
+
+            if (order.shippedDate) {
+                const date = new Date(order.shippedDate);
+                editShippedDate.value = date.toISOString().split('T')[0];
+            } else {
+                editShippedDate.value = '';
+            }
+
+            overlayEdit.style.display = 'flex';
+            setTimeout(() => overlayEdit.classList.add('show'), 10);
+        }
+
+        // ----------------- Save Edit -----------------
+        saveEditBtn.addEventListener('click', async () => {
+            if (!editId) return;
+
+            try {
+                showLoading();
+                const order = allOrders.find(o => o.id === editId);
+                if (!order) throw new Error('Order not found');
+
+                const updatedData = {
+                    orderStatus: parseInt(editStatus.value),
+                    shippedDate: editShippedDate.value || null
+                };
+
+                const res = await fetch(`${API_ORDERS}/${editId}`, {
+                    headers: authHeaders(),
+                    method: 'PUT',
+                    body: JSON.stringify(updatedData)
                 });
 
-                // Close overlays by clicking outside
-                document.querySelectorAll('.overlay').forEach(ov => {
-                            ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('show'); });
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(`HTTP ${res.status}: ${errorText}`);
+                }
+
+                overlayEdit.classList.remove('show');
+                setTimeout(() => {
+                    overlayEdit.style.display = 'none';
+                    editId = null;
+                }, 300);
+
+                showNotification('Order updated successfully!');
+                fetchOrders(currentPage);
+            } catch (err) {
+                console.error(err);
+                showNotification('Failed to update order.', 'error');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // ----------------- Delete Modal -----------------
+        function openDeleteModal(id) {
+            const order = allOrders.find(o => o.id === id);
+            if (!order) return;
+
+            deleteId = id;
+            deleteMsg.textContent = `Are you sure you want to delete order from ${order.customerName || 'customer'}?`;
+
+            overlayDelete.style.display = 'flex';
+            setTimeout(() => overlayDelete.classList.add('show'), 10);
+        }
+
+        confirmDeleteBtn.addEventListener('click', async () => {
+            if (!deleteId) return;
+
+            try {
+                showLoading();
+                const res = await fetch(`${API_ORDERS}/${deleteId}`, {
+                    method: 'DELETE',
+                    headers: authHeaders()
                 });
-                document.getElementById('closeView')?.addEventListener('click', () => document.getElementById('viewOverlay').classList.remove('show'));
-                document.getElementById('cancelDelete')?.addEventListener('click', () => document.getElementById('deleteOverlay').classList.remove('show'));
+                if (!res.ok) throw new Error("Failed to delete order");
+
+                overlayDelete.classList.remove('show');
+                setTimeout(() => {
+                    overlayDelete.style.display = 'none';
+                    deleteId = null;
+                }, 300);
+
+                showNotification('Order deleted successfully!');
+                fetchOrders(currentPage);
+            } catch (err) {
+                console.error(err);
+                showNotification('Failed to delete order.', 'error');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // ----------------- Close Modals -----------------
+        closeViewBtn.addEventListener('click', () => {
+            overlayView.classList.remove('show');
+            setTimeout(() => {
+                overlayView.style.display = 'none';
+            }, 300);
+        });
+
+        cancelEditBtn.addEventListener('click', () => {
+            overlayEdit.classList.remove('show');
+            setTimeout(() => {
+                overlayEdit.style.display = 'none';
+                editId = null;
+            }, 300);
+        });
+
+        cancelDeleteBtn.addEventListener('click', () => {
+            overlayDelete.classList.remove('show');
+            setTimeout(() => {
+                overlayDelete.style.display = 'none';
+                deleteId = null;
+            }, 300);
+        });
+
+        // Click outside modal closes it
+        [overlayView, overlayEdit, overlayDelete].forEach(ov => {
+            ov.addEventListener('click', e => {
+                if (e.target === ov) {
+                    ov.classList.remove('show');
+                    setTimeout(() => {
+                        ov.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+
+        // ----------------- Search -----------------
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        searchInput.addEventListener('input', debounce(() => {
+            currentSearch = searchInput.value.trim().toLowerCase();
+            currentPage = 1;
+
+            if (currentSearch) {
+                filteredOrders = allOrders.filter(order =>
+                    (order.dropshipperName && order.dropshipperName.toLowerCase().includes(currentSearch)) ||
+                    (order.customerName && order.customerName.toLowerCase().includes(currentSearch)) ||
+                    (order.customerAddress && order.customerAddress.toLowerCase().includes(currentSearch)) ||
+                    (order.items && order.items.some(item =>
+                        item.productName && item.productName.toLowerCase().includes(currentSearch)
+                    ))
+                );
+                renderTable(filteredOrders);
+                renderPagination(currentPage, filteredOrders.length, pageSize);
+            } else {
+                filteredOrders = [...allOrders];
+                renderTable(filteredOrders);
+                renderPagination(currentPage, allOrders.length, pageSize);
+            }
+        }, 300));
+
+        // ----------------- Initial Fetch -----------------
+        fetchOrders(currentPage);
+
+        // Optional: toggle sidebar on key press
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'm') document.getElementById('sidebar').classList.toggle('collapsed');
+        });
     </script>
 
-    </body>
+</body>
 </html>

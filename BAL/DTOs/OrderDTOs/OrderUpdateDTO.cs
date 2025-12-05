@@ -9,9 +9,9 @@ namespace BAL.DTOs.OrderDTOs
 {
     public class OrderUpdateDTO
     {
-        public Guid Id { get; set; }
-        public decimal OrderPrice { get; set; }
-        public decimal OrderDiscount { get; set; }
+        //public Guid Id { get; set; }
+        //public decimal OrderPrice { get; set; }
+        //public decimal OrderDiscount { get; set; }
         public OrderStatus OrderStatus { get; set; }
         public DateOnly? ShippedDate { get; set; }
     }

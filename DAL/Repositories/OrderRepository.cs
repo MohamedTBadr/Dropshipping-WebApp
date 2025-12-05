@@ -24,8 +24,51 @@ namespace DAL.Repositories.Implementations
             await _context.Orders.AddAsync(order);
         }
 
-        public void UpdateAsync(Order order)
+        public async Task UpdateAsync(string dropshipperId,Order order)
         {
+            var wallet = await _context.Wallets
+      .Include(w => w.WalletTransactions) // include existing transactions
+      .FirstOrDefaultAsync(w => w.DropshipperId == dropshipperId);
+
+            if (wallet != null)
+            {
+                // Update existing wallet balance
+                wallet.Balance += order.OrderPrice*0.20m;
+
+                // Ensure the WalletTransactions collection is initialized
+                wallet.WalletTransactions ??= new List<WalletTransaction>();
+
+                // Add a new transaction
+                wallet.WalletTransactions.Add(new WalletTransaction
+                {
+                    Amount = order.OrderPrice * 0.20m,
+                    TransactionDate = DateTime.Now,
+                    Description = "Order Payment"
+                });
+
+                // No need to call _context.Wallets.Update(wallet) if the entity is tracked
+            }
+            else
+            {
+                // Create a new wallet with the first transaction
+                var newWallet = new Wallet
+                {
+                    DropshipperId = dropshipperId,
+                    Balance = order.OrderPrice * 0.20m,
+                    WalletTransactions = new List<WalletTransaction>
+            {
+                new WalletTransaction
+                {
+                    Amount = order.OrderPrice*0.20m,
+                    TransactionDate = DateTime.Now,
+                    Description = "Order Payment"
+                }
+            }
+                };
+
+                await _context.Wallets.AddAsync(newWallet);
+            }
+
             _context.Orders.Update(order);
         }
 
@@ -38,7 +81,7 @@ namespace DAL.Repositories.Implementations
             }
         }
 
-        public async Task<Order> GetById(Guid id)
+        public async Task<Order?> GetById(Guid id)
         {
             return await _context.Orders
                 .Include(o => o.Customer)

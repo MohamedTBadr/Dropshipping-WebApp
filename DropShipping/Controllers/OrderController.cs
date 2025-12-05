@@ -53,13 +53,14 @@ namespace API.Controllers
         }
 
         // ✅ Update order
-        [HttpPut]
-        public async Task<IActionResult> UpdateOrder([FromBody] OrderUpdateDTO dto)
+        [HttpPut("{id}")]
+        
+        public async Task<IActionResult> UpdateOrder(Guid id,[FromBody] OrderUpdateDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _orderService.UpdateOrderAsync(dto);
+            await _orderService.UpdateOrderAsync(id,dto);
             return NoContent();
         }
 

@@ -106,51 +106,8 @@ namespace BAL.Services.Implementations
 
 
 
-                var Wallet= await _context.Wallets.Where(w => w.DropshipperId == createDto.DropshipperId).FirstOrDefaultAsync();
 
 
-                var wallet = await _context.Wallets
-          .Include(w => w.WalletTransactions) // include existing transactions
-          .FirstOrDefaultAsync(w => w.DropshipperId == createDto.DropshipperId);
-
-                if (wallet != null)
-                {
-                    // Update existing wallet balance
-                    wallet.Balance += totalPrice;
-
-                    // Ensure the WalletTransactions collection is initialized
-                    wallet.WalletTransactions ??= new List<WalletTransaction>();
-
-                    // Add a new transaction
-                    wallet.WalletTransactions.Add(new WalletTransaction
-                    {
-                        Amount = totalPrice,
-                        TransactionDate = DateTime.Now,
-                        Description = "Order Payment"
-                    });
-
-                    // No need to call _context.Wallets.Update(wallet) if the entity is tracked
-                }
-                else
-                {
-                    // Create a new wallet with the first transaction
-                    var newWallet = new Wallet
-                    {
-                        DropshipperId = createDto.DropshipperId,
-                        Balance = totalPrice,
-                        WalletTransactions = new List<WalletTransaction>
-        {
-            new WalletTransaction
-            {
-                Amount = totalPrice,
-                TransactionDate = DateTime.Now,
-                Description = "Order Payment"
-            }
-        }
-                    };
-
-                    await _context.Wallets.AddAsync(newWallet);
-                }
 
                 // Finally, save changes
 
@@ -185,19 +142,21 @@ namespace BAL.Services.Implementations
         }
 
         // ✅ Update existing order
-        public async Task UpdateOrderAsync(OrderUpdateDTO updateDto)
+        public async Task UpdateOrderAsync(Guid id ,OrderUpdateDTO updateDto)
         {
-            var order = await _orderRepository.GetById(updateDto.Id);
+            var order = await _orderRepository.GetById(id);
             if (order == null)
                 throw new Exception("Order not found");
 
-            order.OrderPrice = updateDto.OrderPrice;
-            order.OrderDiscount = updateDto.OrderDiscount;
+            //order.OrderPrice = updateDto.OrderPrice;
+            //order.OrderDiscount = updateDto.OrderDiscount;
+            
             order.OrderStatus = updateDto.OrderStatus;
             order.ShippedDate = updateDto.ShippedDate;
             order.UpdatedAt = DateTime.Now;
+            var dropshipperId = order.DropshipperId;
 
-            _orderRepository.UpdateAsync(order);
+            _orderRepository.UpdateAsync(dropshipperId,order);
             await _orderRepository.SaveChangesAsync();
         }
 

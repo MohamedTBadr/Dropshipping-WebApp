@@ -1,6 +1,6 @@
 ﻿// ==================== AdminOrders.js ====================
 
-const API_ORDERS = "https://localhost:7000/api/order"; // your endpoint
+const API_ORDERS = "https://localhost:7000/api/order";
 const tbody = document.getElementById('tbody');
 const searchInput = document.getElementById('searchInput');
 const paginationContainer = document.getElementById('pagination');
@@ -8,7 +8,14 @@ const paginationContainer = document.getElementById('pagination');
 const overlayView = document.getElementById('viewOverlay');
 const overlayDelete = document.getElementById('deleteOverlay');
 
-const viewName = document.getElementById('viewName');
+const viewProducts = document.getElementById('viewProducts');
+const viewDropshipper = document.getElementById('viewDropshipper');
+const viewCustomer = document.getElementById('viewCustomer');
+const viewAddress = document.getElementById('viewAddress');
+const viewPrice = document.getElementById('viewPrice');
+const viewDiscount = document.getElementById('viewDiscount');
+const viewStatus = document.getElementById('viewStatus');
+const viewShipped = document.getElementById('viewShipped');
 const closeViewBtn = document.getElementById('closeView');
 
 const deleteMsg = document.getElementById('deleteMsg');
@@ -31,10 +38,19 @@ function authHeaders() {
 // ----------------- Escape HTML -----------------
 function escapeHtml(str) {
     if (!str) return '';
-    return String(str).replace(/[&<>"'`=\/]/g, s => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "/": "&#x2F;", "`": "&#x60;", "=": "&#x3D;" }[s]));
+    return String(str).replace(/[&<>"'`=\/]/g, s => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+        "/": "&#x2F;",
+        "`": "&#x60;",
+        "=": "&#x3D;"
+    }[s]));
 }
 
-// ----------------- Render Row -----------------
+// ----------------- Render Row with Status Buttons -----------------
 function renderRow(order, index) {
     const productNames = order.items?.length > 0
         ? order.items.map(i => i.productName || "Unnamed").join(", ")
@@ -51,11 +67,14 @@ function renderRow(order, index) {
         <td>${escapeHtml(order.customerAddress || "Unknown")}</td>
         <td>${order.orderPrice?.toFixed(2) || "0.00"}</td>
         <td>${order.orderDiscount?.toFixed(2) || "0.00"}</td>
-        <td>${escapeHtml(order.orderStatus?.toString() || "Pending")}</td>
+        <td>
+            <button class="btn-status" data-id="${order.id}" data-status="0" style="background:#f44336;color:white;margin-right:4px;">Declined</button>
+            <button class="btn-status" data-id="${order.id}" data-status="1" style="background:#ff9800;color:white;margin-right:4px;">Delivering</button>
+            <button class="btn-status" data-id="${order.id}" data-status="2" style="background:#4caf50;color:white;">Delivered</button>
+        </td>
         <td>${shippedDate}</td>
         <td style="text-align:right">
             <button class="btn viewBtn" data-id="${order.id}">👁️</button>
-            <button class="btn editBtn" data-id="${order.id}">✏️</button>
             <button class="btn delBtn" data-id="${order.id}">🗑️</button>
         </td>
     `;
@@ -76,8 +95,8 @@ function renderTable(orders) {
 // ----------------- Attach Row Events -----------------
 function attachRowEvents() {
     tbody.querySelectorAll(".viewBtn").forEach(btn => btn.addEventListener('click', () => openViewModal(btn.dataset.id)));
-    tbody.querySelectorAll(".editBtn").forEach(btn => btn.addEventListener('click', () => alert("Edit order: " + btn.dataset.id)));
     tbody.querySelectorAll(".delBtn").forEach(btn => btn.addEventListener('click', () => openDeleteModal(btn.dataset.id)));
+    tbody.querySelectorAll(".btn-status").forEach(btn => btn.addEventListener('click', () => openStatusPrompt(btn.dataset.id, btn.dataset.status)));
 }
 
 // ----------------- Fetch Orders -----------------
@@ -89,7 +108,7 @@ async function fetchOrders(page = 1) {
         const data = await res.json();
         allOrders = data.result || [];
         renderTable(allOrders);
-        renderPagination(data.pageIndex, data.totalCount, data.pageSize);
+        renderPagination(data.pageIndex || page, data.totalCount || 0, data.pageSize || pageSize);
     } catch (err) {
         console.error(err);
         tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:red;padding:20px;">Failed to load orders.</td></tr>`;
@@ -120,9 +139,18 @@ function renderPagination(pageIndex, totalCount, pageSize) {
 
 // ----------------- View Modal -----------------
 function openViewModal(id) {
-    const row = Array.from(tbody.children).find(tr => tr.querySelector(`[data-id="${id}"]`));
-    if (!row) return;
-    viewName.textContent = row.children[1].textContent;
+    const order = allOrders.find(o => o.id === id);
+    if (!order) return;
+
+    viewProducts.textContent = order.items?.map(i => i.productName).join(", ") || "No products";
+    viewDropshipper.textContent = order.dropshipperName || "Unknown";
+    viewCustomer.textContent = order.customerName || "Unknown";
+    viewAddress.textContent = order.customerAddress || "Unknown";
+    viewPrice.textContent = order.orderPrice?.toFixed(2) || "0.00";
+    viewDiscount.textContent = order.orderDiscount?.toFixed(2) || "0.00";
+    viewStatus.textContent = ["Declined", "Delivering", "Delivered"][order.orderStatus] || "Pending";
+    viewShipped.textContent = order.shippedDate ? new Date(order.shippedDate).toLocaleDateString() : "Not shipped";
+
     overlayView.classList.add('show');
 }
 
@@ -157,6 +185,34 @@ confirmDeleteBtn.addEventListener('click', async () => {
 [overlayView, overlayDelete].forEach(ov =>
     ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('show'); })
 );
+
+// ----------------- Update Order Status Prompt -----------------
+async function openStatusPrompt(orderId, status) {
+    let shippedDate = null;
+    if (parseInt(status) === 1 || parseInt(status) === 2) {
+        shippedDate = prompt("Enter shipped date (YYYY-MM-DD):", new Date().toISOString().split("T")[0]);
+        if (!shippedDate) return;
+    }
+    try {
+        const res = await fetch(`${API_ORDERS}/${orderId}`, {
+            method: 'PUT',
+            headers: {
+                ...authHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                orderStatus: parseInt(status),
+                shippedDate: shippedDate
+            })
+        });
+        if (!res.ok) throw new Error('Failed to update order');
+        alert('Order updated successfully!');
+        fetchOrders(currentPage);
+    } catch (err) {
+        console.error(err);
+        alert('Failed to update order.');
+    }
+}
 
 // ----------------- Search -----------------
 searchInput.addEventListener('input', () => {
