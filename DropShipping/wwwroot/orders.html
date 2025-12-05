@@ -732,8 +732,8 @@
             try {
                 // Ensure the loading state is visible
                 body.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 30px;">Loading orders...</td></tr>`;
-
-                const response = await fetch(`/api/Order?pageIndex=${page}&pageSize=${pageSize}`, { headers: getAuthHeaders() });
+                var dropshipperId = localStorage.getItem("userId");
+                const response = await fetch(`/api/Order?pageIndex=${page}&pageSize=${pageSize}&dropshipperId=${dropshipperId}`, { headers: getAuthHeaders() });
 
                 if (!response.ok) throw new Error("Failed to fetch orders");
 

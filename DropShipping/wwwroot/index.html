@@ -660,6 +660,11 @@
             }
         }
     </style>
+
+    <script>
+        var token = localStorage.getItem("token")
+        if(!token) Window.href="loginregistration.html"
+    </script>
 </head>
 
 <body>

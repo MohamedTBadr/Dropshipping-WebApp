@@ -111,6 +111,10 @@ namespace DAL.Repositories.Implementations
 
             if (parameters.ToDate.HasValue)
                 query = query.Where(o => o.CreatedAt <= parameters.ToDate.Value.ToDateTime(TimeOnly.MaxValue));
+            if (parameters.DropshipperId is not null)
+                query = query.Where(o => o.DropshipperId == parameters.DropshipperId);
+
+
 
             // 🎯 Filter by Status
             if (!string.IsNullOrEmpty(parameters.Status) && 
