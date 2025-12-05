@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DropZone - Premium Tech Marketplace</title>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     <style>
+        /* =========================================
+           1. CORE VARIABLES & RESET
+           ========================================= */
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --secondary: #8338ec;
+            --accent: #ff006e;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 12px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,92 +34,472 @@
         }
 
         body {
-            background: #f3f7ff;
-            color: #1e293b;
+            background-color: #f3f7ff;
+            color: var(--dark);
+            padding-top: 120px;
             overflow-x: hidden;
         }
 
-        header {
-            background: #fff;
-            padding: 1rem 2rem;
-            position: sticky;
+        /* =========================================
+           2. HEADER STYLES
+           ========================================= */
+        .main-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+            box-shadow: var(--shadow);
+            position: fixed;
             top: 0;
+            width: 100%;
             z-index: 1000;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .container {
+        .container-nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            height: 70px;
         }
 
-        .logo h1 {
-            font-size: 1.8rem;
-            color: #1e3a8a;
-            font-weight: 700;
-            letter-spacing: -1px;
-        }
-
-        .search-bar {
+        /* Logo Section */
+        .logo {
             display: flex;
             align-items: center;
-            gap: .5rem;
+            gap: 12px;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .circle {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+        }
+
+            .circle::before {
+                content: '';
+                position: absolute;
+                width: 16px;
+                height: 16px;
+                background: white;
+                border-radius: 50%;
+            }
+
+        .headName h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            transition: var(--transition);
+        }
+
+        .logo:hover .headName h1 {
+            transform: translateY(-2px);
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            flex: 0 1 600px;
+            margin: 0 30px;
+            position: relative;
         }
 
             .search-bar input {
-                width: 280px;
-                padding: .6rem 1rem;
+                flex: 1;
+                padding: 14px 50px 14px 24px;
+                border: 2px solid var(--light-gray);
                 border-radius: 50px;
-                border: 1px solid #d0d7e4;
+                font-size: 15px;
+                transition: var(--transition);
+                background: white;
                 outline: none;
             }
 
                 .search-bar input:focus {
-                    border-color: #3b82f6;
-                    box-shadow: 0 0 10px rgba(59,130,246,0.25);
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
                 }
 
             .search-bar button {
-                background: #3b82f6;
-                border: none;
-                padding: .6rem 1rem;
-                border-radius: 50px;
+                position: absolute;
+                right: 6px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
                 color: white;
+                border: none;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
                 cursor: pointer;
+                transition: var(--transition);
             }
 
-        .right-section a {
-            margin-left: 1rem;
-            color: #1e293b;
-            font-weight: 600;
+                .search-bar button:hover {
+                    transform: translateY(-50%) scale(1.05);
+                    box-shadow: 0 5px 15px rgba(58, 134, 255, 0.4);
+                }
+
+        /* Right Section */
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
         }
+
+        .cart {
+            position: relative;
+            font-size: 22px;
+        }
+
+            .cart a {
+                color: var(--dark);
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                background: var(--light-gray);
+                text-decoration: none;
+            }
+
+                .cart a:hover {
+                    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                    color: white;
+                    transform: translateY(-2px);
+                }
 
         .cart-count {
-            background: #1e3a8a;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
             color: white;
-            padding: 3px 7px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            margin-left: -12px;
-            font-size: .7rem;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(255, 0, 110, 0.3);
         }
 
+        .login-link {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+            .login-link:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(58, 134, 255, 0.3);
+            }
+
+        /* Main Navigation */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+            .main-nav ul {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                list-style: none;
+                height: 50px;
+                align-items: center;
+                justify-content: center; /* Centered Navigation */
+            }
+
+            .main-nav li {
+                position: relative;
+                margin: 0 15px;
+            }
+
+            .main-nav a {
+                color: var(--dark);
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 15px;
+                padding: 12px 16px;
+                border-radius: 8px;
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+                .main-nav a:hover {
+                    color: var(--primary);
+                    background: rgba(58, 134, 255, 0.1);
+                }
+
+        /* Dropdown */
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 220px;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 1000;
+            padding: 10px 0;
+            text-align: left;
+        }
+
+            .dropdown-menu li {
+                margin: 0;
+            }
+
+            .dropdown-menu a {
+                padding: 12px 20px;
+                color: var(--dark);
+                font-weight: 500;
+                border-radius: 0;
+                display: block;
+            }
+
+                .dropdown-menu a:hover {
+                    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                    color: white;
+                }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+            .menu-toggle:hover {
+                background: var(--light-gray);
+            }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .notification.show {
+                transform: translateX(0);
+            }
+
+        /* =========================================
+           3. HOME PAGE SPECIFIC STYLES
+           ========================================= */
+
+        /* Hero Section */
         .hero {
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 4rem 2rem;
-            background: linear-gradient(to right,#1e3a8a,#3b82f6);
+            background: linear-gradient(to right, #1e3a8a, #3b82f6);
             color: white;
             gap: 3rem;
+            margin-top: 10px;
+            border-radius: 0 0 30px 30px;
         }
 
             .hero img {
                 max-width: 420px;
                 border-radius: 20px;
-                box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
                 animation: float 4s infinite ease-in-out;
             }
+
+            .hero h1 {
+                font-size: 2.8rem;
+                font-weight: 700;
+                line-height: 1.3;
+            }
+
+            .hero p {
+                margin-top: 1rem;
+                font-size: 1.2rem;
+                opacity: .9;
+            }
+
+        .btn-hero {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: .9rem 2.5rem;
+            background: white;
+            color: #1e3a8a;
+            font-weight: 700;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+            .btn-hero:hover {
+                background: #cbd5e1;
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            }
+
+        /* Features Section */
+        .features {
+            margin-top: -80px;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 1.5rem;
+            width: 280px;
+            border-radius: 20px;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.15);
+            transition: .3s;
+        }
+
+            .feature:hover {
+                transform: translateY(-8px);
+            }
+
+            .feature i {
+                font-size: 2.5rem;
+                color: #3b82f6;
+                margin-bottom: .7rem;
+            }
+
+        /* Categories Section */
+        .categories {
+            padding: 3rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+            .categories h2 {
+                text-align: center;
+                margin-bottom: 2rem;
+                font-size: 2rem;
+                font-weight: 700;
+                color: #1e3a8a;
+            }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-item {
+            padding: 40px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            cursor: pointer;
+            transition: .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+        }
+
+            .category-item:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 35px rgba(59, 130, 246, 0.20);
+            }
+
+            .category-item h3 {
+                font-size: 1.2rem;
+                color: #1e3a8a;
+                font-weight: 600;
+            }
+
+        /* Footer */
+        footer {
+            padding: 2rem;
+            background: #1e3a8a;
+            color: white;
+            text-align: center;
+            letter-spacing: .5px;
+            margin-top: 4rem;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
 
         @keyframes float {
             0% {
@@ -117,138 +515,210 @@
             }
         }
 
-        .hero h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            line-height: 1.3;
-        }
-
-        .hero p {
-            margin-top: 1rem;
-            font-size: 1.2rem;
-            opacity: .9;
-        }
-
-        .btn-hero {
-            display: inline-block;
-            margin-top: 1.5rem;
-            padding: .9rem 2.5rem;
-            background: white;
-            color: #1e3a8a;
-            font-weight: 700;
-            border-radius: 50px;
-            font-size: 1.1rem;
-        }
-
-            .btn-hero:hover {
-                background: #cbd5e1;
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
             }
 
-        .features {
-            margin-top: -80px;
-            padding: 2rem;
-            display: flex;
-            justify-content: space-around;
-            text-align: center;
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .feature {
-            background: rgba(255,255,255,0.65);
-            padding: 1.5rem;
-            width: 280px;
-            border-radius: 20px;
-            backdrop-filter: blur(18px);
-            box-shadow: 0 10px 30px rgba(30,58,138,0.15);
-            transition: .3s;
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .search-bar {
+                flex: 0 1 400px;
+            }
         }
 
-            .feature:hover {
-                transform: translateY(-8px);
+        @media (max-width: 768px) {
+            body {
+                padding-top: 140px;
             }
 
-            .feature i {
-                font-size: 2.5rem;
-                color: #3b82f6;
-                margin-bottom: .7rem;
+            .container-nav {
+                height: 60px;
+                padding: 0 15px;
             }
 
-        .categories {
-            padding: 3rem 2rem;
-        }
-
-            .categories h2 {
-                text-align: center;
-                margin-bottom: 2rem;
-                font-size: 2rem;
-                font-weight: 700;
-                color: #1e3a8a;
+            .menu-toggle {
+                display: flex;
             }
 
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
-            gap: 1.5rem;
-        }
-
-        .category-item {
-            background: white;
-            padding: 1rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            text-align: center;
-            cursor: pointer;
-            transition: .3s;
-        }
-
-            .category-item:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 20px 35px rgba(59,130,246,0.20);
+            .search-bar {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                margin: 0;
+                padding: 15px;
+                background: white;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                display: none;
+                animation: slideDown 0.3s ease;
             }
 
-            .category-item img {
-                width: 100%;
-                height: 130px;
-                object-fit: contain;
-                margin-bottom: .6rem;
+                .search-bar.active {
+                    display: flex;
+                }
+
+            .right-section {
+                gap: 15px;
             }
 
-            .category-item h3 {
-                font-size: 1.1rem;
-                color: #1e3a8a;
+            .login-link {
+                padding: 8px 16px;
+                font-size: 14px;
             }
 
-        footer {
-            padding: 2rem;
-            background: #1e3a8a;
-            color: white;
-            text-align: center;
-            letter-spacing: .5px;
-        }
+            .main-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+                z-index: 999;
+            }
 
-        @media(max-width:768px) {
+                .main-nav.active {
+                    transform: translateY(0);
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+                .main-nav ul {
+                    flex-direction: column;
+                    height: auto;
+                    padding: 15px;
+                }
+
+                .main-nav li {
+                    width: 100%;
+                    margin: 5px 0;
+                }
+
+                .main-nav a {
+                    padding: 15px;
+                    justify-content: space-between;
+                }
+
+            .dropdown-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                background: var(--light-gray);
+                margin-top: 5px;
+                display: none;
+            }
+
+            .dropdown.active .dropdown-menu {
+                display: block;
+            }
+
+            .dropdown-menu a {
+                padding-left: 30px;
+            }
+
             .hero {
                 flex-direction: column;
                 text-align: center;
             }
+
+            .features {
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .headName h1 {
+                font-size: 22px;
+            }
+
+            .circle {
+                width: 35px;
+                height: 35px;
+            }
+
+            .cart a {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cart-count {
+                width: 20px;
+                height: 20px;
+                font-size: 11px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <header>
-        <div class="container">
-            <a href="index.html" class="logo"><h1>DropZone</h1></a>
-            <div class="search-bar">
-                <input id="searchInput" type="text" placeholder="Search products..." />
-                <button id="searchBtn"><i class="fa fa-search"></i></button>
+    <header class="main-header">
+        <div class="container-nav">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <a href="index.html" class="logo">
+                <div class="circle"></div>
+                <div class="headName">
+                    <h1>DropZone</h1>
+                </div>
+            </a>
+
+            <div class="search-bar" id="searchBar">
+                <input type="text" placeholder="Search products, brands, categories..." id="navSearchInput" />
+                <button id="navSearchBtn"><i class="fa fa-search"></i></button>
             </div>
+
             <div class="right-section">
-                <a href="ShoppingCart.html"><i class="fa fa-cart-shopping"></i></a>
-                <span class="cart-count" id="cartCount">0</span>
-                <a href="#">Logout</a>
+                <div class="cart">
+                    <a href="ShoppingCart.html">
+                        <i class="fa fa-shopping-basket"></i>
+                    </a>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <button class="login-link" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
             </div>
         </div>
+
+        <nav class="main-nav" id="mainNav">
+            <ul>
+                <li class="dropdown" id="allProductsDropdown">
+                    <a href="#">
+                        <i class="fas fa-boxes"></i>
+                        All Categories
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu" id="navDropdownMenu">
+                        <li><a href="#" style="color: gray;">Loading...</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="DropshipperProfile.html"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </nav>
     </header>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Notification Message</span>
+    </div>
 
     <section class="hero">
         <img src="./images/HeroImage (2).png" alt="Product Hero">
@@ -280,7 +750,6 @@
     <section class="categories">
         <h2>Shop by Category</h2>
         <div class="category-grid" id="categoryContainer">
-            <!-- JS will append categories here -->
         </div>
     </section>
 
@@ -289,29 +758,102 @@
     </footer>
 
     <script>
+        // =========================================
+        // 1. NAVIGATION CATEGORIES CLASS
+        // =========================================
+        class NavigationCategories {
+            constructor() {
+                this.apiBaseUrl = 'https://localhost:7000/api/Category';
+                this.dropdownMenu = document.getElementById('navDropdownMenu');
+                this.init();
+            }
+
+            async init() {
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => this.loadCategories());
+                } else {
+                    await this.loadCategories();
+                }
+            }
+
+            async loadCategories() {
+                try {
+                    if (!this.dropdownMenu) {
+                        console.warn('Dropdown menu not found in navigation');
+                        return;
+                    }
+
+                    const response = await fetch(this.apiBaseUrl);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const categories = await response.json();
+                    this.populateDropdown(categories);
+                    console.log('Loaded categories:', categories.length);
+
+                } catch (error) {
+                    console.error('Error loading categories:', error);
+                    if (this.dropdownMenu) {
+                        this.dropdownMenu.innerHTML = '<li><a href="#">Error loading categories</a></li>';
+                    }
+                }
+            }
+
+            populateDropdown(categories) {
+                if (!categories || categories.length === 0) {
+                    console.warn('No categories received from API');
+                    return;
+                }
+
+                this.dropdownMenu.innerHTML = '';
+
+                categories.forEach(category => {
+                    const li = document.createElement('li');
+
+                    li.innerHTML = `
+                                <a href="Products.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
+                                    <i class="fas fa-angle-right"></i> ${category.name}
+                                </a>
+                            `;
+
+                    this.dropdownMenu.appendChild(li);
+                });
+            }
+        }
+
+        // =========================================
+        // 3. CATEGORY GRID FETCHING
+        // =========================================
         const API_CATEGORY = "https://localhost:7000/api/Category";
         const categoryContainer = document.querySelector("#categoryContainer");
 
-        async function loadCategories() {
+        async function loadGridCategories() {
             try {
                 const response = await fetch(API_CATEGORY);
                 if (!response.ok) throw new Error("Categories fetch failed");
                 const categories = await response.json();
-                renderCategories(categories);
+                renderGridCategories(categories);
             } catch (error) {
                 console.error(error);
                 if (categoryContainer) categoryContainer.innerHTML = "<p>Failed to load categories</p>";
             }
         }
 
-        function renderCategories(categories) {
+        function renderGridCategories(categories) {
             if (!categoryContainer) return;
             categoryContainer.innerHTML = "";
             categories.forEach(cat => {
                 const div = document.createElement("div");
                 div.className = "category-item";
                 div.dataset.id = cat.id;
-                div.innerHTML = `<img src="./images/Phones2.png"><h3>${cat.name}</h3>`;
+                div.innerHTML = `
+                            <div>
+                                <i class="fas fa-cubes" style="font-size: 2rem; color: #3a86ff; margin-bottom: 10px;"></i>
+                                <h3>${cat.name}</h3>
+                            </div>
+                        `;
                 div.addEventListener("click", () => {
                     window.location.href = `Products.html?categoryId=${cat.id}&categoryName=${encodeURIComponent(cat.name)}`;
                 });
@@ -319,8 +861,9 @@
             });
         }
 
-        document.addEventListener("DOMContentLoaded", loadCategories);
+        document.addEventListener("DOMContentLoaded", loadGridCategories);
     </script>
+    <script src="JS/nav.js"></script>
 
 </body>
 </html>

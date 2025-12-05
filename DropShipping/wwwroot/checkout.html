@@ -4,119 +4,311 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Checkout - Drop Shopping</title>
+    <title>Checkout - DropZone</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="./home.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="CSS/checkout.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           1. DROPZONE CORE STYLES (Navigation & Global)
+           ========================================= */
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --secondary: #8338ec;
+            --accent: #ff006e;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 12px;
+        }
+
+        /* Base Resets */
+        * { box-sizing: border-box; }
+        
+        body {
+            background-color: #f3f7ff;
+            color: var(--dark);
+            padding-top: 130px; /* Space for fixed header */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: "Poppins", sans-serif;
+        }
+
+        a { text-decoration: none; }
+
+        /* =========================================
+           2. HEADER STYLES
+           ========================================= */
+        .main-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+            box-shadow: var(--shadow);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .container-nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        /* Logo */
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .circle {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            animation: pulse 2s infinite; box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3); position: relative;
+        }
+        .circle::before { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; }
+        .headName h1 {
+            font-size: 28px; font-weight: 800; margin: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        /* Search Bar */
+        .search-bar { display: flex; flex: 0 1 600px; margin: 0 30px; position: relative; }
+        .search-bar input {
+            flex: 1; padding: 14px 50px 14px 24px; border: 2px solid var(--light-gray);
+            border-radius: 50px; font-size: 15px; transition: var(--transition); background: white; outline: none;
+        }
+        .search-bar input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1); }
+        .search-bar button {
+            position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white; border: none; width: 40px; height: 40px; border-radius: 50%;
+            cursor: pointer; transition: var(--transition);
+        }
+        .search-bar button:hover { transform: translateY(-50%) scale(1.05); }
+
+        /* Right Section */
+        .right-section { display: flex; align-items: center; gap: 25px; }
+        .cart { position: relative; font-size: 22px; }
+        .cart a {
+            color: var(--dark); transition: var(--transition); display: flex;
+            align-items: center; justify-content: center; width: 45px; height: 45px;
+            border-radius: 50%; background: var(--light-gray); text-decoration: none;
+        }
+        .cart a:hover { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; transform: translateY(-2px); }
+        .cart-count {
+            position: absolute; top: -5px; right: -5px; background: var(--accent);
+            color: white; width: 22px; height: 22px; border-radius: 50%; font-size: 12px;
+            font-weight: bold; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 3px 10px rgba(255, 0, 110, 0.3);
+        }
+        .login-link {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white; padding: 10px 24px; border-radius: 50px; text-decoration: none;
+            font-weight: 600; transition: var(--transition); border: none; cursor: pointer; font-size: 15px;
+        }
+        .login-link:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(58, 134, 255, 0.3); color: white; }
+
+        /* Navigation Bar */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .main-nav ul {
+            max-width: 1400px; margin: 0 auto; padding: 0 20px; display: flex;
+            list-style: none; height: 50px; align-items: center; justify-content: center;
+        }
+        .main-nav li { position: relative; margin: 0 15px; }
+        .main-nav a {
+            color: var(--dark); text-decoration: none; font-weight: 600; font-size: 15px;
+            padding: 12px 16px; border-radius: 8px; transition: var(--transition);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .main-nav a:hover, .main-nav a.active { color: var(--primary); background: rgba(58, 134, 255, 0.1); }
+
+        /* Dropdown */
+        .dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu {
+            position: absolute; top: 100%; left: 0; background: white; min-width: 220px;
+            box-shadow: var(--shadow); border-radius: var(--border-radius); opacity: 0;
+            visibility: hidden; transform: translateY(10px); transition: var(--transition);
+            z-index: 1000; padding: 10px 0; text-align: left; border: none;
+        }
+        .dropdown-menu li { margin: 0; }
+        .dropdown-menu a { padding: 12px 20px; color: var(--dark); font-weight: 500; border-radius: 0; display: block; }
+        .dropdown-menu a:hover { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none; background: none; border: none; font-size: 24px;
+            color: var(--dark); cursor: pointer; width: 45px; height: 45px;
+            border-radius: 50%; align-items: center; justify-content: center; transition: var(--transition);
+        }
+        .menu-toggle:hover { background: var(--light-gray); }
+
+        /* Footer */
+        footer {
+            padding: 2rem; background: #1e3a8a; color: white; text-align: center;
+            letter-spacing: .5px; margin-top: auto;
+        }
+
+        /* Checkout Specific Overrides */
+        .checkout-section {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .card {
+            border: none;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) { .search-bar { flex: 0 1 400px; } }
+        @media (max-width: 768px) {
+            body { padding-top: 140px; }
+            .container-nav { height: 60px; padding: 0 15px; }
+            .menu-toggle { display: flex; }
+            .search-bar {
+                position: absolute; top: 100%; left: 0; right: 0; margin: 0; padding: 15px;
+                background: white; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); display: none;
+            }
+            .search-bar.active { display: flex; }
+            .right-section { gap: 15px; }
+            .main-nav {
+                position: fixed; top: 70px; left: 0; right: 0; background: white;
+                transform: translateY(-100%); opacity: 0; visibility: hidden;
+                transition: var(--transition); z-index: 999; height: auto;
+            }
+            .main-nav.active { transform: translateY(0); opacity: 1; visibility: visible; }
+            .main-nav ul { flex-direction: column; height: auto; padding: 15px; }
+            .main-nav li { width: 100%; margin: 5px 0; }
+            .main-nav a { padding: 15px; justify-content: space-between; }
+            .dropdown-menu {
+                position: static; opacity: 1; visibility: visible; transform: none;
+                box-shadow: none; background: #f8f9fa; display: none; margin-top: 5px;
+            }
+            .dropdown.active .dropdown-menu { display: block; }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="main-header">
-        <div class="container">
-            <!-- Logo -->
-            <div class="logo">
-                <div class="circle"></div>
-                <a href="index.html" class="headName">
-                    <h1>DropZone</h1>
-                </a>
-            </div>
 
-            <!-- Search Bar -->
-            <div class="search-bar">
-                <input type="text" placeholder="Search product ..." />
-                <button><i class="fa fa-search"></i></button>
+    <header class="main-header">
+        <div class="container-nav">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <a href="index.html" class="logo">
+                <div class="circle"></div>
+                <div class="headName">
+                    <h1>DropZone</h1>
+                </div>
+            </a>
+
+            <div class="search-bar" id="searchBar">
+                <input type="text" placeholder="Search products..." id="navSearchInput" />
+                <button id="navSearchBtn"><i class="fa fa-search"></i></button>
             </div>
 
             <div class="right-section">
                 <div class="cart">
-                    <a href="ShoppingCart.html"><i class="fa fa-shopping-basket"></i></a>
+                    <a href="ShoppingCart.html">
+                        <i class="fa fa-shopping-basket"></i>
+                    </a>
                     <span class="cart-count" id="cartCount">0</span>
                 </div>
-                <a href="#" class="login-link">Logout</a>
+                <button class="login-link" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
             </div>
         </div>
 
-        <nav class="main-nav">
+        <nav class="main-nav" id="mainNav">
             <ul>
-                <li class="dropdown">
-                    <a href="#">All Products <i class="fa fa-caret-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Phones</a></li>
-                        <li><a href="#">Laptops</a></li>
-                        <li><a href="#">Headphones</a></li>
-                        <li><a href="#">Chargers</a></li>
-                        <li><a href="#">Cables</a></li>
-                        <li><a href="#">TVs</a></li>
-                        <li><a href="#">Home Appliances</a></li>
-                        <li><a href="#">Smartwatches</a></li>
+                <li class="dropdown" id="allProductsDropdown">
+                    <a href="#">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <i class="fas fa-boxes"></i> All Categories
+                        </div>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu" id="navDropdownMenu">
+                        <li><a href="#" style="color: gray;">Loading...</a></li>
                     </ul>
                 </li>
-
-                <li><a href="#">New Products</a></li>
-                <li><a href="#">Orders</a></li>
-                <li><a href="#">Profile</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="DropshipperProfile.html"><i class="fas fa-user"></i> Profile</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- Checkout Section -->
-    <main class="checkout-section container1">
-        <h1 class="mb-4">Checkout</h1>
+    <main class="checkout-section">
+        <h1 class="mb-4" style="color: var(--dark); font-weight: 700;">Checkout</h1>
 
         <div class="row">
-            <!-- Left Column: Customer Details Form -->
             <div class="col-lg-7">
                 <div class="card p-4 mb-4">
-                    <h3 class="mb-4">Customer Information</h3>
+                    <h3 class="mb-4" style="color: var(--primary);">Customer Information</h3>
                     <form id="checkoutForm">
                         <div class="mb-3">
-                            <label for="customerName" class="form-label">Full Name <span
-                                    class="text-danger">*</span></label>
+                            <label for="customerName" class="form-label">Full Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="customerName" name="name" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="customerEmail" class="form-label">Email Address <span
-                                    class="text-danger">*</span></label>
+                            <label for="customerEmail" class="form-label">Email Address <span class="text-danger">*</span></label>
                             <input type="email" class="form-control" id="customerEmail" name="email" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="customerPhone" class="form-label">Phone Number <span
-                                    class="text-danger">*</span></label>
+                            <label for="customerPhone" class="form-label">Phone Number <span class="text-danger">*</span></label>
                             <input type="tel" class="form-control" id="customerPhone" name="phoneNumber" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="customerAddress" class="form-label">Shipping Address <span
-                                    class="text-danger">*</span></label>
-                            <textarea class="form-control" id="customerAddress" name="address" rows="3"
-                                required></textarea>
+                            <label for="customerAddress" class="form-label">Shipping Address <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="customerAddress" name="address" rows="3" required></textarea>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Right Column: Order Summary -->
             <div class="col-lg-5">
                 <div class="card p-4 mb-4">
-                    <h3 class="mb-4">Order Summary</h3>
+                    <h3 class="mb-4" style="color: var(--primary);">Order Summary</h3>
 
-                    <!-- Cart Items -->
                     <div id="orderItemsList" class="order-items-list mb-3">
-                        <!-- Dynamic items will be inserted here -->
-                    </div>
+                        </div>
 
                     <hr>
 
-                    <!-- Price Summary -->
                     <div class="d-flex justify-content-between mb-2">
                         <span>Subtotal:</span>
                         <strong id="subtotalValue">$0.00</strong>
@@ -128,54 +320,25 @@
                     <hr>
                     <div class="d-flex justify-content-between mb-4">
                         <span class="h5">Total:</span>
-                        <strong class="h5 text-primary" id="totalValue">$0.00</strong>
+                        <strong class="h5" style="color: var(--accent);" id="totalValue">$0.00</strong>
                     </div>
 
-                    <!-- Place Order Button -->
-                    <button type="button" class="btn btn-primary w-100 btn-lg" id="placeOrderBtn">
+                    <button type="button" class="btn btn-primary w-100 btn-lg text-white" id="placeOrderBtn">
                         Place Order
                     </button>
                 </div>
 
                 <a href="ShoppingCart.html" class="btn btn-outline-secondary w-100">
-                    ← Back to Cart
+                    <i class="fas fa-arrow-left me-2"></i> Back to Cart
                 </a>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container footer-content">
-            <div class="footer-col">
-                <h3>Shop</h3>
-                <ul>
-                    <li><a href="#">Hot deals</a></li>
-                    <li><a href="#">Categories</a></li>
-                    <li><a href="#">Brands</a></li>
-                    <li><a href="#">Rebates</a></li>
-                    <li><a href="#">Weekly deals</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h3>Need help?</h3>
-                <ul>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Order tracking</a></li>
-                    <li><a href="#">FAQs</a></li>
-                    <li><a href="#">Return policy</a></li>
-                    <li><a href="#">Privacy policy</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h3>Contact</h3>
-                <p>contact@info.com</p>
-            </div>
-        </div>
+    <footer>
+        <p>© 2025 DropZone. All rights reserved.</p>
     </footer>
 
-    <!-- Loading Modal -->
     <div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -189,11 +352,99 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // =========================================
+        // 1. NAVIGATION & GLOBAL LOGIC
+        // =========================================
+        class NavigationCategories {
+            constructor() {
+                this.apiBaseUrl = 'https://localhost:7000/api/Category';
+                this.dropdownMenu = document.getElementById('navDropdownMenu');
+                this.init();
+            }
+
+            async init() {
+                await this.loadCategories();
+            }
+
+            async loadCategories() {
+                try {
+                    const response = await fetch(this.apiBaseUrl);
+                    if (!response.ok) throw new Error("API Error");
+                    const categories = await response.json();
+                    this.populateDropdown(categories);
+                } catch (error) {
+                    if (this.dropdownMenu) {
+                        this.dropdownMenu.innerHTML = '<li><a href="#">Categories unavailable</a></li>';
+                    }
+                }
+            }
+
+            populateDropdown(categories) {
+                if (!categories || categories.length === 0) return;
+                this.dropdownMenu.innerHTML = '';
+                categories.forEach(category => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <a href="Products.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
+                            <i class="fas fa-angle-right"></i> ${category.name}
+                        </a>`;
+                    this.dropdownMenu.appendChild(li);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Init Nav
+            new NavigationCategories();
+
+            // Mobile Menu
+            const menuToggle = document.getElementById('menuToggle');
+            const mainNav = document.getElementById('mainNav');
+            const searchBar = document.getElementById('searchBar');
+            const dropdowns = document.querySelectorAll('.dropdown');
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', () => {
+                    mainNav.classList.toggle('active');
+                    searchBar.classList.toggle('active');
+                    menuToggle.innerHTML = mainNav.classList.contains('active') ?
+                        '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+                });
+            }
+
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        dropdown.classList.toggle('active');
+                    }
+                });
+            });
+
+            // Update Header Cart Count
+            const cartCount = document.getElementById('cartCount');
+            function updateHeaderCartCount() {
+                const savedCart = localStorage.getItem('dropzoneCart');
+                const cartItems = savedCart ? JSON.parse(savedCart).length : 0;
+                if(cartCount) cartCount.textContent = cartItems;
+            }
+            updateHeaderCartCount();
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', function () {
+                if (confirm('Are you sure you want to logout?')) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    </script>
+
     <script src="assets/js/api.js"></script>
     <script src="assets/js/checkout.js"></script>
-    <script src="./assets/js/cart.js"></script>
 </body>
 
 </html>

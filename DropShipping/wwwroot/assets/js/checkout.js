@@ -117,9 +117,9 @@ class CheckoutPage {
 
         console.log('Order Data to be sent:', JSON.stringify(orderData, null, 2));
 
-        // Show loading modal
-        const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
-        loadingModal.show();
+        //// Show loading modal
+        //const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+        //loadingModal.show();
 
         try {
             // Send order to backend
@@ -140,8 +140,8 @@ class CheckoutPage {
             // Clear cart
             localStorage.removeItem('cartItems');
 
-            // Hide loading modal
-            loadingModal.hide();
+            //// Hide loading modal
+            //loadingModal.hide();
 
             // Show success message
             this.showSuccessMessage(result);

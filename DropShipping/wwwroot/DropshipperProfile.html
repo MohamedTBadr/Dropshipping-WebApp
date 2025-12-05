@@ -1,84 +1,355 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropshipper Profile | SupplierConnect</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Dropshipper Profile - DropZone</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
     <style>
+        /* =========================================
+           1. DROPZONE CORE STYLES (Navigation & Global)
+           ========================================= */
+        :root {
+            /* DropZone Theme Colors */
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --secondary: #8338ec;
+            --accent: #ff006e;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 12px;
+            /* Legacy Profile Colors (Mapped to new theme where possible) */
+            --success-color: #4ade80;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3a0ca3;
-            --accent-color: #4cc9f0;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-            --success-color: #4ade80;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --gray-color: #6c757d;
-            --light-gray: #e9ecef;
-            --border-radius: 10px;
-            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
+            font-family: "Poppins", sans-serif;
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f7ff;
-            color: var(--dark-color);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 20px 0;
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-            box-shadow: var(--box-shadow);
-            margin-bottom: 30px;
-        }
-
-        .header-content {
+            background-color: #f3f7ff;
+            color: var(--dark);
+            padding-top: 130px; /* Space for fixed header */
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER STYLES --- */
+        .main-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+            box-shadow: var(--shadow);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .container-nav {
+            max-width: 1400px;
+            margin: 0 auto;
             padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1.8rem;
+            gap: 12px;
+            text-decoration: none;
         }
 
-            .logo i {
-                color: var(--accent-color);
+        .circle {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+        }
+
+            .circle::before {
+                content: '';
+                position: absolute;
+                width: 16px;
+                height: 16px;
+                background: white;
+                border-radius: 50%;
             }
 
-        .user-actions {
-            display: flex;
-            gap: 15px;
+        .headName h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
         }
 
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            flex: 0 1 600px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+            .search-bar input {
+                flex: 1;
+                padding: 14px 50px 14px 24px;
+                border: 2px solid var(--light-gray);
+                border-radius: 50px;
+                font-size: 15px;
+                transition: var(--transition);
+                background: white;
+                outline: none;
+            }
+
+                .search-bar input:focus {
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
+                }
+
+            .search-bar button {
+                position: absolute;
+                right: 6px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                color: white;
+                border: none;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: var(--transition);
+            }
+
+                .search-bar button:hover {
+                    transform: translateY(-50%) scale(1.05);
+                }
+
+        /* Right Section */
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .cart {
+            position: relative;
+            font-size: 22px;
+        }
+
+            .cart a {
+                color: var(--dark);
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                background: var(--light-gray);
+                text-decoration: none;
+            }
+
+                .cart a:hover {
+                    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                    color: white;
+                    transform: translateY(-2px);
+                }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(255, 0, 110, 0.3);
+        }
+
+        .login-link {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+            .login-link:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(58, 134, 255, 0.3);
+            }
+
+        /* Main Navigation */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+            .main-nav ul {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                list-style: none;
+                height: 50px;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .main-nav li {
+                position: relative;
+                margin: 0 15px;
+            }
+
+            .main-nav a {
+                color: var(--dark);
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 15px;
+                padding: 12px 16px;
+                border-radius: 8px;
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+                .main-nav a:hover,
+                .main-nav a.active {
+                    color: var(--primary);
+                    background: rgba(58, 134, 255, 0.1);
+                }
+
+        /* Dropdown */
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 220px;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 1000;
+            padding: 10px 0;
+            text-align: left;
+        }
+
+            .dropdown-menu li {
+                margin: 0;
+            }
+
+            .dropdown-menu a {
+                padding: 12px 20px;
+                color: var(--dark);
+                font-weight: 500;
+                border-radius: 0;
+                display: block;
+            }
+
+                .dropdown-menu a:hover {
+                    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                    color: white;
+                }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+            .menu-toggle:hover {
+                background: var(--light-gray);
+            }
+
+        /* =========================================
+           2. PROFILE PAGE SPECIFIC STYLES
+           ========================================= */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Page Title Area */
+        .page-header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0 30px;
+        }
+
+        .page-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2rem;
+            color: #1e3a8a; /* Matches Orders Page */
+        }
+
+        /* Buttons */
         .btn {
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             border: none;
             font-weight: 500;
             cursor: pointer;
@@ -86,55 +357,49 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-family: 'Poppins', sans-serif;
         }
 
         .btn-primary {
-            background-color: var(--accent-color);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
         }
 
             .btn-primary:hover {
-                background-color: #38b2d9;
                 transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
             }
 
-        .btn-outline {
-            background-color: transparent;
+        .btn-danger {
+            background-color: var(--danger-color);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-            .btn-outline:hover {
-                background-color: rgba(255, 255, 255, 0.1);
+            .btn-danger:hover {
+                background-color: #dc2626;
             }
 
-        .page-title {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 2.2rem;
-            text-align: center;
-            margin: 20px 0 30px;
-            color: var(--dark-color);
+        .btn-secondary {
+            background-color: var(--gray);
+            color: white;
         }
 
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        /* Profile Layout */
         .profile-container {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 320px 1fr;
             gap: 30px;
         }
 
-        @media (max-width: 992px) {
-            .profile-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
+        /* Sidebar */
         .sidebar {
             background-color: white;
             border-radius: var(--border-radius);
-            padding: 25px;
-            box-shadow: var(--box-shadow);
+            padding: 30px 25px;
+            box-shadow: var(--shadow);
             height: fit-content;
         }
 
@@ -151,30 +416,30 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 2.5rem;
             margin-bottom: 15px;
-            border: 5px solid white;
-            box-shadow: var(--box-shadow);
+            border: 5px solid #f3f7ff;
+            box-shadow: 0 10px 20px rgba(58, 134, 255, 0.2);
         }
 
         .profile-name {
-            font-family: 'Poppins', sans-serif;
             font-weight: 600;
             font-size: 1.5rem;
             margin-bottom: 5px;
         }
 
         .profile-role {
-            background-color: var(--light-gray);
-            color: var(--gray-color);
+            background-color: #e0e7ff;
+            color: var(--primary);
             padding: 5px 15px;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .sidebar-menu {
@@ -189,62 +454,59 @@
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                padding: 12px 15px;
+                padding: 14px 15px;
                 border-radius: 8px;
-                color: var(--dark-color);
+                color: var(--dark);
                 text-decoration: none;
                 transition: var(--transition);
+                font-weight: 500;
             }
 
-                .sidebar-menu a:hover,
-                .sidebar-menu a.active {
-                    background-color: rgba(67, 97, 238, 0.1);
-                    color: var(--primary-color);
+                .sidebar-menu a:hover, .sidebar-menu a.active {
+                    background-color: rgba(58, 134, 255, 0.1);
+                    color: var(--primary);
                 }
 
-            .sidebar-menu i {
-                width: 20px;
-                text-align: center;
-            }
-
+        /* Content Area */
         .content {
             background-color: white;
             border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+            box-shadow: var(--shadow);
             overflow: hidden;
+            min-height: 500px;
         }
 
         .tabs {
             display: flex;
-            background-color: var(--light-color);
+            background-color: #f8faff;
             border-bottom: 1px solid var(--light-gray);
             overflow-x: auto;
         }
 
         .tab-btn {
-            padding: 18px 30px;
+            padding: 20px 30px;
             background: none;
             border: none;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            font-size: 1rem;
-            color: var(--gray-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--gray);
             cursor: pointer;
             transition: var(--transition);
             white-space: nowrap;
             display: flex;
             align-items: center;
             gap: 10px;
+            border-bottom: 3px solid transparent;
         }
 
             .tab-btn:hover {
-                color: var(--primary-color);
-                background-color: rgba(67, 97, 238, 0.05);
+                color: var(--primary);
+                background-color: rgba(58, 134, 255, 0.05);
             }
 
             .tab-btn.active {
-                color: var(--primary-color);
-                border-bottom: 3px solid var(--primary-color);
+                color: var(--primary);
+                border-bottom: 3px solid var(--primary);
                 background-color: white;
             }
 
@@ -258,24 +520,24 @@
             }
 
         .tab-pane {
-            padding: 30px;
+            padding: 40px;
         }
 
         .section-title {
-            font-family: 'Poppins', sans-serif;
             font-weight: 600;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: var(--primary-color);
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: #1e3a8a;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
             .section-title i {
-                color: var(--accent-color);
+                color: var(--primary);
             }
 
+        /* Data Grids */
         .data-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -283,61 +545,31 @@
             margin-bottom: 30px;
         }
 
-        @media (max-width: 768px) {
-            .data-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .data-item {
-            background-color: var(--light-color);
+            background-color: #f8faff;
             padding: 20px;
-            border-radius: var(--border-radius);
-            border-left: 4px solid var(--primary-color);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
         }
 
         .data-label {
-            font-size: 0.9rem;
-            color: var(--gray-color);
-            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: var(--gray);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            margin-bottom: 5px;
         }
 
         .data-value {
             font-size: 1.1rem;
             font-weight: 500;
-            color: var(--dark-color);
-        }
-
-        .status-active {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: rgba(74, 222, 128, 0.2);
-            color: #166534;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .status-inactive {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: rgba(239, 68, 68, 0.2);
-            color: #991b1b;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
+            color: var(--dark);
         }
 
         .address-section {
-            background-color: var(--light-color);
+            background-color: #f8faff;
             padding: 25px;
-            border-radius: var(--border-radius);
+            border-radius: 10px;
             margin-bottom: 30px;
         }
 
@@ -347,30 +579,37 @@
             gap: 15px;
         }
 
-        @media (max-width: 768px) {
-            .address-grid {
-                grid-template-columns: 1fr;
-            }
+        /* Status Badges */
+        .status-active {
+            background-color: rgba(74, 222, 128, 0.2);
+            color: #166534;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
+        .status-inactive {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #991b1b;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Account Info Bar */
         .account-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(76, 201, 240, 0.1));
-            border-radius: var(--border-radius);
+            background: linear-gradient(135deg, rgba(58, 134, 255, 0.1), rgba(131, 56, 236, 0.1));
+            border-radius: 10px;
             margin-top: 30px;
         }
 
-        @media (max-width: 768px) {
-            .account-info {
-                flex-direction: column;
-                gap: 20px;
-                align-items: flex-start;
-            }
-        }
-
+        /* Wallet Cards */
         .wallet-summary {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -378,35 +617,29 @@
             margin-bottom: 30px;
         }
 
-        @media (max-width: 768px) {
-            .wallet-summary {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .wallet-card {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             padding: 25px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(58, 134, 255, 0.2);
         }
 
         .wallet-card-secondary {
-            background: linear-gradient(135deg, var(--accent-color), #2a9d8f);
+            background: linear-gradient(135deg, var(--secondary), #ff006e);
         }
 
         .wallet-card-warning {
-            background: linear-gradient(135deg, var(--warning-color), #e76f51);
+            background: linear-gradient(135deg, #ff9f1c, #e71d36);
         }
 
         .wallet-amount {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 700;
             margin: 10px 0;
-            font-family: 'Poppins', sans-serif;
         }
 
+        /* Tables */
         .transactions-table {
             width: 100%;
             border-collapse: collapse;
@@ -414,12 +647,11 @@
         }
 
             .transactions-table th {
-                background-color: var(--light-color);
+                background-color: #f8faff;
                 padding: 15px;
                 text-align: left;
                 font-weight: 600;
-                color: var(--dark-color);
-                border-bottom: 2px solid var(--light-gray);
+                color: var(--gray);
             }
 
             .transactions-table td {
@@ -428,10 +660,10 @@
             }
 
             .transactions-table tr:hover {
-                background-color: rgba(67, 97, 238, 0.05);
+                background-color: #f8faff;
             }
 
-        /* Modal Styles */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -440,10 +672,9 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            z-index: 2000;
             align-items: center;
             justify-content: center;
-            padding: 20px;
         }
 
             .modal.active {
@@ -454,35 +685,19 @@
             background-color: white;
             width: 90%;
             max-width: 600px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
             overflow: hidden;
             max-height: 90vh;
             overflow-y: auto;
         }
 
         .modal-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             padding: 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-            .modal-header h3 {
-                font-family: 'Poppins', sans-serif;
-                font-weight: 600;
-                font-size: 1.3rem;
-            }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            line-height: 1;
         }
 
         .modal-body {
@@ -497,39 +712,25 @@
                 display: block;
                 margin-bottom: 8px;
                 font-weight: 500;
-                color: var(--dark-color);
             }
 
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
+            .form-group input, .form-group select {
                 width: 100%;
                 padding: 12px 15px;
                 border: 1px solid var(--light-gray);
-                border-radius: 5px;
-                font-family: 'Roboto', sans-serif;
-                font-size: 1rem;
-                transition: var(--transition);
+                border-radius: 8px;
+                outline: none;
             }
 
-                .form-group input:focus,
-                .form-group select:focus,
-                .form-group textarea:focus {
-                    outline: none;
-                    border-color: var(--primary-color);
-                    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+                .form-group input:focus {
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
                 }
 
         .form-row {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
         }
 
         .modal-actions {
@@ -541,38 +742,21 @@
             border-top: 1px solid var(--light-gray);
         }
 
-        .btn-secondary {
-            background-color: var(--gray-color);
-            color: white;
-        }
-
-            .btn-secondary:hover {
-                background-color: #5a6268;
-            }
-
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-            .btn-danger:hover {
-                background-color: #dc2626;
-            }
-
+        /* Notification */
         .notification {
             position: fixed;
-            top: 20px;
+            top: 100px;
             right: 20px;
             padding: 15px 25px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
             background-color: white;
             display: flex;
             align-items: center;
             gap: 15px;
             transform: translateX(150%);
-            transition: transform 0.5s ease;
-            z-index: 1000;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 2000;
             border-left: 4px solid var(--success-color);
         }
 
@@ -580,45 +764,203 @@
                 transform: translateX(0);
             }
 
-            .notification i {
-                font-size: 1.5rem;
+        /* Responsive */
+        @media (max-width: 992px) {
+            .profile-container {
+                grid-template-columns: 1fr;
             }
 
+            .wallet-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 140px;
+            }
+
+            .container-nav {
+                height: 60px;
+                padding: 0 15px;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .search-bar {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                margin: 0;
+                padding: 15px;
+                background: white;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                display: none;
+            }
+
+                .search-bar.active {
+                    display: flex;
+                }
+
+            .main-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                z-index: 999;
+                height: auto;
+            }
+
+                .main-nav.active {
+                    transform: translateY(0);
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+                .main-nav ul {
+                    flex-direction: column;
+                    height: auto;
+                    padding: 15px;
+                }
+
+                .main-nav li {
+                    width: 100%;
+                    margin: 5px 0;
+                }
+
+                .main-nav a {
+                    padding: 15px;
+                    justify-content: space-between;
+                }
+
+            .dropdown-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                background: #f8f9fa;
+                display: none;
+                margin-top: 5px;
+            }
+
+            .dropdown.active .dropdown-menu {
+                display: block;
+            }
+
+            .data-grid, .address-grid, .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .account-info {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .page-header-area {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Footer */
         footer {
+            padding: 2rem;
+            background: #1e3a8a;
+            color: white;
             text-align: center;
-            margin-top: 40px;
-            padding: 20px 0;
-            color: var(--gray-color);
-            font-size: 0.9rem;
-            border-top: 1px solid var(--light-gray);
+            letter-spacing: .5px;
+            margin-top: auto;
         }
     </style>
 </head>
+
 <body>
 
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-box-open"></i>
-                    <span>SupplierConnect</span>
+    <header class="main-header">
+        <div class="container-nav">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <a href="index.html" class="logo">
+                <div class="circle"></div>
+                <div class="headName">
+                    <h1>DropZone</h1>
                 </div>
-                <div class="user-actions">
-                    <button class="btn btn-outline"><i class="fas fa-chart-line"></i> Dashboard</button>
-                    <button class="btn btn-primary" id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button>
+            </a>
+
+            <div class="search-bar" id="searchBar">
+                <input type="text" placeholder="Search..." id="navSearchInput" />
+                <button id="navSearchBtn"><i class="fa fa-search"></i></button>
+            </div>
+
+            <div class="right-section">
+                <div class="cart">
+                    <a href="ShoppingCart.html">
+                        <i class="fa fa-shopping-basket"></i>
+                    </a>
+                    <span class="cart-count" id="cartCount">0</span>
                 </div>
+                <button class="login-link" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
             </div>
         </div>
+
+        <nav class="main-nav" id="mainNav">
+            <ul>
+                <li class="dropdown" id="allProductsDropdown">
+                    <a href="#">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <i class="fas fa-boxes"></i> All Categories
+                        </div>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu" id="navDropdownMenu">
+                        <li><a href="#" style="color: gray;">Loading...</a></li>
+                    </ul>
+                </li>
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="DropshipperProfile.html" class="active"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </nav>
     </header>
 
     <div class="container">
-        <h1 class="page-title">Dropshipper Dashboard</h1>
+        <div class="page-header-area">
+            <h1 class="page-title">Dropshipper Dashboard</h1>
+            <button class="btn btn-primary" id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button>
+        </div>
 
         <div class="profile-container">
             <aside class="sidebar">
                 <div class="profile-header">
                     <div class="avatar" id="profileAvatar">JD</div>
-                    <h2 class="profile-name" id="profileName">John Doe</h2>
+                    <h2 class="profile-name" id="profileName">Loading...</h2>
                     <div class="profile-role">Verified Dropshipper</div>
                 </div>
 
@@ -631,7 +973,7 @@
 
             <main class="content">
                 <div class="tabs">
-                    <button class="tab-btn active" data-tab="profile"><i class="fas fa-user"></i> Profile Information</button>
+                    <button class="tab-btn active" data-tab="profile"><i class="fas fa-user"></i> Profile Info</button>
                     <button class="tab-btn" data-tab="wallet"><i class="fas fa-wallet"></i> Wallet</button>
                     <button class="tab-btn" data-tab="transactions"><i class="fas fa-exchange-alt"></i> Transactions</button>
                 </div>
@@ -654,7 +996,7 @@
                         <div class="account-info">
                             <div><div class="data-label">Account ID</div><div class="data-value" id="accountId"></div></div>
                             <div>
-                                <button class="btn btn-danger" id="deactivateBtn"><i class="fas fa-user-slash"></i> Deactivate Account</button>
+                                <button class="btn btn-danger" id="deactivateBtn"><i class="fas fa-user-slash"></i> Deactivate</button>
                             </div>
                         </div>
                     </div>
@@ -702,12 +1044,11 @@
         </div>
     </div>
 
-    <!-- Edit Profile Modal -->
     <div class="modal" id="editProfileModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
-                <button class="modal-close" id="closeEditModal">&times;</button>
+                <button class="modal-close" id="closeEditModal" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="editProfileForm">
@@ -721,7 +1062,6 @@
                             <input type="email" id="editEmail" required>
                         </div>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label for="editPhone">Phone Number</label>
@@ -735,9 +1075,7 @@
                             </select>
                         </div>
                     </div>
-
                     <h4 class="section-title" style="font-size: 1.1rem; margin: 20px 0 15px;"><i class="fas fa-map-marker-alt"></i> Address Information</h4>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label for="editStreet">Street Address</label>
@@ -748,14 +1086,12 @@
                             <input type="text" id="editCity" required>
                         </div>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label for="editCountry">Country</label>
                             <input type="text" id="editCountry" required>
                         </div>
                     </div>
-
                     <div class="modal-actions">
                         <button type="button" class="btn btn-secondary" id="cancelEdit">Cancel</button>
                         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -765,47 +1101,81 @@
         </div>
     </div>
 
-    <!-- Notification -->
     <div class="notification" id="notification">
         <i class="fas fa-check-circle"></i>
         <div>
-            <div class="data-label" id="notificationTitle">Success</div>
-            <div class="data-value" id="notificationMessage">Operation completed successfully!</div>
+            <div class="data-label" id="notificationTitle" style="margin:0;">Success</div>
+            <div style="font-size:0.95rem; color:#333;" id="notificationMessage">Operation completed successfully!</div>
         </div>
     </div>
 
+    <footer>
+        <p>© 2025 DropZone. All rights reserved.</p>
+    </footer>
+
     <script>
-        // API Configuration
+        // =========================================
+        // 1. NAVIGATION LOGIC (From Index/Orders)
+        // =========================================
+        class NavigationCategories {
+            constructor() {
+                this.apiBaseUrl = 'https://localhost:7000/api/Category';
+                this.dropdownMenu = document.getElementById('navDropdownMenu');
+                this.init();
+            }
+
+            async init() {
+                await this.loadCategories();
+            }
+
+            async loadCategories() {
+                try {
+                    const response = await fetch(this.apiBaseUrl);
+                    if (!response.ok) throw new Error("API Error");
+                    const categories = await response.json();
+                    this.populateDropdown(categories);
+                } catch (error) {
+                    if (this.dropdownMenu) {
+                        this.dropdownMenu.innerHTML = '<li><a href="#">Categories unavailable</a></li>';
+                    }
+                }
+            }
+
+            populateDropdown(categories) {
+                if (!categories || categories.length === 0) return;
+                this.dropdownMenu.innerHTML = '';
+                categories.forEach(category => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                            <a href="Products.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
+                                <i class="fas fa-angle-right"></i> ${category.name}
+                            </a>`;
+                    this.dropdownMenu.appendChild(li);
+                });
+            }
+        }
+
+        // =========================================
+        // 2. PROFILE LOGIC
+        // =========================================
         const apiUrl = 'https://localhost:7000/api/dropshipper';
         let dropshipperData = null;
         let walletData = null;
         let transactionsData = [];
 
-        // Format date
         function formatDate(dateString) {
             if (!dateString) return 'N/A';
             try {
                 const date = new Date(dateString);
-                return date.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-            } catch {
-                return dateString;
-            }
+                return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            } catch { return dateString; }
         }
 
-        // Format currency
         function formatCurrency(amount) {
             if (amount == null) return '$0.00';
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD'
-            }).format(amount);
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
         }
 
-        // Show notification
         function showNotification(title, message, type = 'success') {
             const notification = document.getElementById('notification');
             const icon = notification.querySelector('i');
@@ -817,48 +1187,35 @@
 
             if (type === 'success') {
                 icon.className = 'fas fa-check-circle';
-                notification.style.borderLeftColor = 'var(--success-color)';
-                icon.style.color = 'var(--success-color)';
+                notification.style.borderLeftColor = '#4ade80';
+                icon.style.color = '#4ade80';
             } else if (type === 'error') {
                 icon.className = 'fas fa-exclamation-circle';
-                notification.style.borderLeftColor = 'var(--danger-color)';
-                icon.style.color = 'var(--danger-color)';
-            } else if (type === 'warning') {
-                icon.className = 'fas fa-exclamation-triangle';
-                notification.style.borderLeftColor = 'var(--warning-color)';
-                icon.style.color = 'var(--warning-color)';
+                notification.style.borderLeftColor = '#ef4444';
+                icon.style.color = '#ef4444';
             }
 
             notification.classList.add('show');
-
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+            setTimeout(() => { notification.classList.remove('show'); }, 3000);
         }
 
-        // Load dropshipper data from API
         async function loadDropshipper() {
             try {
                 const userId = localStorage.getItem("userId") || "";
                 if (!userId) {
-                    showNotification('Error', 'User not logged in', 'error');
+                    document.getElementById("profileName").textContent = "Guest";
+                    showNotification('Info', 'Please log in to view profile.', 'error');
                     return;
                 }
 
                 const response = await fetch(`${apiUrl}/${userId}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error("Failed to fetch data");
 
                 const data = await response.json();
 
-                // Store the data
                 dropshipperData = {
                     id: data.id,
                     userName: data.userName,
@@ -869,98 +1226,53 @@
                     address: data.address || {}
                 };
 
-                // Extract wallet data
                 walletData = data.wallet ? {
                     walletId: data.wallet.walletId,
                     balance: data.wallet.balance || 0,
                     dropshipperId: data.wallet.dropshipperId,
                     recentActivity: data.wallet.walletTransactionDTO || []
-                } : {
-                    walletId: 0,
-                    balance: 0,
-                    dropshipperId: data.id,
-                    recentActivity: []
-                };
+                } : { walletId: 0, balance: 0, dropshipperId: data.id, recentActivity: [] };
 
                 transactionsData = walletData.recentActivity;
 
-                // Update the UI
                 updateProfileDisplay();
                 updateWalletDisplay();
                 populateTransactionsTable();
 
             } catch (error) {
                 console.error('Error loading dropshipper data:', error);
-                showNotification('Error', 'Failed to load data from API. Check server connection.', 'error');
+                showNotification('Error', 'Failed to load profile data.', 'error');
             }
         }
 
-        // Update profile with PUT request
         async function updateProfile(updatedData) {
             try {
-                const userId = localStorage.getItem("userId") || "";
-                if (!userId) {
-                    showNotification('Error', 'User not logged in', 'error');
-                    return false;
-                }
-
+                const userId = localStorage.getItem("userId");
                 const response = await fetch(`${apiUrl}/${userId}`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify(updatedData)
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error("Update failed");
 
                 const data = await response.json();
 
-                // Update local data with response
-                dropshipperData = {
-                    id: data.id,
-                    userName: data.userName,
-                    email: data.email,
-                    phoneNumber: data.phoneNumber,
-                    isActive: data.isActive,
-                    createdAt: data.createdAt,
-                    address: data.address || {}
-                };
+                // Refresh local data state
+                dropshipperData = { ...dropshipperData, ...data };
+                if (data.address) dropshipperData.address = data.address;
 
-                // Update wallet data if included in response
-                if (data.wallet) {
-                    walletData = {
-                        walletId: data.wallet.walletId,
-                        balance: data.wallet.balance || 0,
-                        dropshipperId: data.wallet.dropshipperId,
-                        recentActivity: data.wallet.walletTransactionDTO || []
-                    };
-                    transactionsData = walletData.recentActivity;
-                }
-
-                // Update UI
                 updateProfileDisplay();
-                updateWalletDisplay();
-                populateTransactionsTable();
-
                 showNotification('Success', 'Profile updated successfully!', 'success');
                 return true;
-
             } catch (error) {
-                console.error('Error updating profile:', error);
-                showNotification('Error', `Failed to update profile: ${error.message}`, 'error');
+                showNotification('Error', `Failed to update profile.`, 'error');
                 return false;
             }
         }
 
-        // Update profile display
         function updateProfileDisplay() {
             if (!dropshipperData) return;
-
             document.getElementById("userId").textContent = dropshipperData.id || "N/A";
             document.getElementById("userName").textContent = dropshipperData.userName || "N/A";
             document.getElementById("userEmail").textContent = dropshipperData.email || "N/A";
@@ -968,13 +1280,11 @@
             document.getElementById("createdAt").textContent = formatDate(dropshipperData.createdAt);
             document.getElementById("accountId").textContent = dropshipperData.id || "N/A";
 
-            // Update profile avatar and name
             const initials = dropshipperData.userName ?
                 dropshipperData.userName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : "U";
             document.getElementById("profileAvatar").textContent = initials;
             document.getElementById("profileName").textContent = dropshipperData.userName || "User";
 
-            // Update account status
             const statusEl = document.getElementById("accountStatus");
             if (dropshipperData.isActive) {
                 statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Active';
@@ -983,202 +1293,148 @@
                 statusEl.innerHTML = '<i class="fas fa-times-circle"></i> Inactive';
                 statusEl.className = 'status-inactive';
             }
-
-            // Update address
             populateAddress();
         }
 
-        // Populate address
         function populateAddress() {
             const addressInfo = document.getElementById("addressInfo");
             const address = dropshipperData?.address || {};
-
             let html = '';
-
-            if (address.street) {
-                html += `<div class='data-item'><div class='data-label'>Street</div><div class='data-value'>${address.street}</div></div>`;
-            }
-
-            if (address.city) {
-                html += `<div class='data-item'><div class='data-label'>City</div><div class='data-value'>${address.city}</div></div>`;
-            }
-
-            if (address.country) {
-                html += `<div class='data-item'><div class='data-label'>Country</div><div class='data-value'>${address.country}</div></div>`;
-            }
-
-            if (!html) {
-                html = `<div class='data-item'><div class='data-label'>Address</div><div class='data-value'>No address information available</div></div>`;
-            }
-
+            if (address.street) html += `<div class='data-item'><div class='data-label'>Street</div><div class='data-value'>${address.street}</div></div>`;
+            if (address.city) html += `<div class='data-item'><div class='data-label'>City</div><div class='data-value'>${address.city}</div></div>`;
+            if (address.country) html += `<div class='data-item'><div class='data-label'>Country</div><div class='data-value'>${address.country}</div></div>`;
+            if (!html) html = `<div class='data-item'><div class='data-label'>Address</div><div class='data-value'>No address available</div></div>`;
             addressInfo.innerHTML = html;
         }
 
-        // Update wallet display
         function updateWalletDisplay() {
             if (!walletData) return;
-
             const walletSummary = document.getElementById("walletSummary");
             walletSummary.innerHTML = `
                     <div class="wallet-card">
-                        <div class="data-label">Current Balance</div>
+                        <div class="data-label" style="color:rgba(255,255,255,0.8)">Current Balance</div>
                         <div class="wallet-amount">${formatCurrency(walletData.balance)}</div>
-                        <div>Available for withdrawals</div>
+                        <div style="font-size:0.9rem">Available for withdrawals</div>
                     </div>
                     <div class="wallet-card wallet-card-secondary">
-                        <div class="data-label">Wallet ID</div>
+                        <div class="data-label" style="color:rgba(255,255,255,0.8)">Wallet ID</div>
                         <div class="wallet-amount">#${walletData.walletId}</div>
-                        <div>Wallet identifier</div>
                     </div>
                     <div class="wallet-card wallet-card-warning">
-                        <div class="data-label">Transactions</div>
+                        <div class="data-label" style="color:rgba(255,255,255,0.8)">Transactions</div>
                         <div class="wallet-amount">${transactionsData.length}</div>
-                        <div>Total transactions</div>
-                    </div>
-                `;
-
+                    </div>`;
             populateWalletActivity();
         }
 
-        // Populate wallet activity
         function populateWalletActivity() {
             const tbody = document.getElementById("walletActivity");
-
             if (!walletData?.recentActivity?.length) {
-                tbody.innerHTML = `
-                        <tr>
-                            <td colspan="5" style="text-align:center; padding:20px; color:#6c757d;">
-                                <i class="fas fa-history" style="font-size:24px;margin-bottom:10px;display:block;"></i>
-                                No recent wallet activity
-                            </td>
-                        </tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px;">No recent wallet activity</td></tr>`;
                 return;
             }
-
             tbody.innerHTML = walletData.recentActivity.map(act => {
                 const type = act.type || 'transaction';
-                const typeClass = type === 'income' ? 'income' :
-                    type === 'expense' ? 'expense' : 'transaction';
+                const typeColor = type === 'income' ? '#065f46' : type === 'expense' ? '#991b1b' : '#1e40af';
+                const typeBg = type === 'income' ? '#d1fae5' : type === 'expense' ? '#fee2e2' : '#dbeafe';
                 const amountSign = type === 'income' ? '+' : '-';
-
                 return `
                         <tr>
                             <td>${formatDate(act.date)}</td>
                             <td>${act.description || 'Transaction'}</td>
-                            <td><span style="padding: 4px 8px; border-radius: 4px; background: ${typeClass === 'income' ? '#d1fae5' : typeClass === 'expense' ? '#fee2e2' : '#dbeafe'}; color: ${typeClass === 'income' ? '#065f46' : typeClass === 'expense' ? '#991b1b' : '#1e40af'};">${type}</span></td>
+                            <td><span style="padding:4px 8px; border-radius:4px; background:${typeBg}; color:${typeColor}; font-size:0.85rem; font-weight:600;">${type}</span></td>
                             <td><strong>${amountSign}${formatCurrency(Math.abs(act.amount || 0))}</strong></td>
                             <td>${formatCurrency(act.balanceAfter || act.balance || 0)}</td>
                         </tr>`;
             }).join('');
         }
 
-        // Populate transactions table
         function populateTransactionsTable() {
             const tbody = document.getElementById("transactionsTableBody");
-
             if (!transactionsData.length) {
-                tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" style="text-align:center;padding:30px;color:#6c757d;">
-                                <i class="fas fa-exchange-alt" style="font-size:24px;margin-bottom:10px;display:block;"></i>
-                                No transaction history available
-                            </td>
-                        </tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;">No transaction history available</td></tr>`;
                 return;
             }
-
             tbody.innerHTML = transactionsData.map(tx => {
                 const type = tx.type || 'transaction';
                 const status = tx.status || 'completed';
-                const typeClass = type === 'income' ? 'income' :
-                    type === 'expense' ? 'expense' : 'transaction';
-                const statusClass = status === 'completed' ? 'completed' :
-                    status === 'pending' ? 'pending' : 'failed';
-
                 return `
                         <tr>
                             <td>${tx.id || tx.transactionId || 'N/A'}</td>
                             <td>${formatDate(tx.date || tx.transactionDate)}</td>
                             <td>${tx.description || 'Transaction'}</td>
-                            <td><span style="padding: 4px 8px; border-radius: 4px; background: ${typeClass === 'income' ? '#d1fae5' : typeClass === 'expense' ? '#fee2e2' : '#dbeafe'}; color: ${typeClass === 'income' ? '#065f46' : typeClass === 'expense' ? '#991b1b' : '#1e40af'};">${type}</span></td>
+                            <td><span style="font-size:0.85rem; font-weight:600; text-transform:capitalize;">${type}</span></td>
                             <td><strong>${formatCurrency(tx.amount || 0)}</strong></td>
-                            <td><span style="padding: 4px 8px; border-radius: 4px; background: ${statusClass === 'completed' ? '#d1fae5' : statusClass === 'pending' ? '#fef3c7' : '#fee2e2'}; color: ${statusClass === 'completed' ? '#065f46' : statusClass === 'pending' ? '#92400e' : '#991b1b'};">${status}</span></td>
+                            <td><span style="padding:4px 8px; border-radius:4px; background:#d1fae5; color:#065f46; font-size:0.85rem; font-weight:600;">${status}</span></td>
                         </tr>`;
             }).join('');
         }
 
-        // Setup tab switching
-        function setupTabSwitching() {
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            const sidebarLinks = document.querySelectorAll('.sidebar-tab');
+        // =========================================
+        // 3. INITIALIZATION
+        // =========================================
+        document.addEventListener("DOMContentLoaded", () => {
+            // Init Nav
+            new NavigationCategories();
 
-            function switchTab(tabId) {
-                // Hide all tabs
-                document.querySelectorAll('.tab-content').forEach(tab => {
-                    tab.classList.remove('active');
+            // Mobile Menu
+            const menuToggle = document.getElementById('menuToggle');
+            const mainNav = document.getElementById('mainNav');
+            const searchBar = document.getElementById('searchBar');
+            const dropdowns = document.querySelectorAll('.dropdown');
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', () => {
+                    mainNav.classList.toggle('active');
+                    searchBar.classList.toggle('active');
                 });
-
-                // Remove active class from all buttons
-                tabButtons.forEach(btn => {
-                    btn.classList.remove('active');
-                });
-
-                // Remove active class from sidebar links
-                sidebarLinks.forEach(link => {
-                    link.classList.remove('active');
-                });
-
-                // Show selected tab
-                const selectedTab = document.getElementById(`${tabId}-tab`);
-                if (selectedTab) {
-                    selectedTab.classList.add('active');
-                }
-
-                // Activate corresponding button
-                const selectedButton = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
-                if (selectedButton) {
-                    selectedButton.classList.add('active');
-                }
-
-                // Activate sidebar link
-                const selectedLink = document.querySelector(`.sidebar-tab[data-tab="${tabId}"]`);
-                if (selectedLink) {
-                    selectedLink.classList.add('active');
-                }
             }
 
-            // Add click events
-            tabButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    switchTab(btn.getAttribute('data-tab'));
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) dropdown.classList.toggle('active');
                 });
             });
 
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    switchTab(link.getAttribute('data-tab'));
-                });
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
             });
-        }
 
-        // Setup edit profile modal
-        function setupEditProfile() {
-            const editBtn = document.getElementById('editProfileBtn');
+            // Init Profile Logic
+            loadDropshipper();
+
+            // Tabs Logic
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const sidebarLinks = document.querySelectorAll('.sidebar-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            function switchTab(tabId) {
+                tabContents.forEach(t => t.classList.remove('active'));
+                tabButtons.forEach(b => b.classList.remove('active'));
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+
+                document.getElementById(`${tabId}-tab`)?.classList.add('active');
+                document.querySelector(`.tab-btn[data-tab="${tabId}"]`)?.classList.add('active');
+                document.querySelector(`.sidebar-tab[data-tab="${tabId}"]`)?.classList.add('active');
+            }
+
+            tabButtons.forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
+            sidebarLinks.forEach(link => link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab(link.getAttribute('data-tab'));
+            }));
+
+            // Modal Logic
             const modal = document.getElementById('editProfileModal');
+            const editBtn = document.getElementById('editProfileBtn');
             const closeBtn = document.getElementById('closeEditModal');
             const cancelBtn = document.getElementById('cancelEdit');
             const form = document.getElementById('editProfileForm');
-            const deactivateBtn = document.getElementById('deactivateBtn');
 
-            // Open modal
             editBtn.addEventListener('click', () => {
-                if (!dropshipperData) {
-                    showNotification('Error', 'No profile data loaded', 'error');
-                    return;
-                }
-
-                // Populate form with current data
+                if (!dropshipperData) return;
                 document.getElementById('editUserName').value = dropshipperData.userName || '';
                 document.getElementById('editEmail').value = dropshipperData.email || '';
                 document.getElementById('editPhone').value = dropshipperData.phoneNumber || '';
@@ -1186,30 +1442,16 @@
                 document.getElementById('editStreet').value = dropshipperData.address?.street || '';
                 document.getElementById('editCity').value = dropshipperData.address?.city || '';
                 document.getElementById('editCountry').value = dropshipperData.address?.country || '';
-
                 modal.classList.add('active');
             });
 
-            // Close modal
-            function closeModal() {
-                modal.classList.remove('active');
-                form.reset();
-            }
-
+            const closeModal = () => { modal.classList.remove('active'); form.reset(); };
             closeBtn.addEventListener('click', closeModal);
             cancelBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-            // Close modal when clicking outside
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    closeModal();
-                }
-            });
-
-            // Form submission
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-
                 const updatedData = {
                     id: dropshipperData.id,
                     userName: document.getElementById('editUserName').value,
@@ -1222,40 +1464,15 @@
                         country: document.getElementById('editCountry').value
                     }
                 };
-
                 const success = await updateProfile(updatedData);
-                if (success) {
-                    closeModal();
-                }
+                if (success) closeModal();
             });
 
-            // Deactivate account
-            deactivateBtn.addEventListener('click', () => {
-                if (confirm('Are you sure you want to deactivate your account? This action can be reversed by contacting support.')) {
-                    // Send update with isActive: false
-                    const deactivateData = {
-                        ...dropshipperData,
-                        isActive: false
-                    };
-
-                    updateProfile(deactivateData);
+            document.getElementById('deactivateBtn').addEventListener('click', () => {
+                if (confirm('Deactivate account?')) {
+                    updateProfile({ ...dropshipperData, isActive: false });
                 }
             });
-        }
-
-        // Initialize everything
-        document.addEventListener("DOMContentLoaded", () => {
-            // Load initial data
-            loadDropshipper();
-
-            // Setup UI interactions
-            setupTabSwitching();
-            setupEditProfile();
-
-            // Auto-refresh every 60 seconds
-            setInterval(() => {
-                loadDropshipper();
-            }, 60000);
         });
     </script>
 </body>
