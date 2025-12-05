@@ -161,6 +161,15 @@
 
     <script>
         // Modal controls
+        // --- Get JWT token from localStorage ---
+        function authHeaders() {
+            const token = localStorage.getItem("token");
+            console.log(token);
+            return {
+                "Authorization": `Bearer ${token}`,
+
+            };
+        }
         const modalOverlay = document.getElementById('modalOverlay');
         const deleteOverlay = document.getElementById('deleteOverlay');
 
@@ -183,7 +192,10 @@
         async function loadAdmins() {
             tbody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
             try {
-                const res = await fetch(apiUrl);
+                const res = await fetch(apiUrl, {
+                    headers: authHeaders()
+
+                });
                 const data = await res.json();
 
                 if (!Array.isArray(data) || data.length === 0) {
@@ -236,9 +248,13 @@
             try {
                 const res = await fetch(apiUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        ...authHeaders(),           // spread your auth headers
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify(payload)
                 });
+
 
                 if (!res.ok) {
                     const errData = await res.json();
@@ -265,7 +281,12 @@
             if (!deleteId) return;
 
             try {
-                const res = await fetch(`${apiUrl}/${deleteId}`, { method: 'DELETE' });
+                const res = await fetch(`${apiUrl}/${deleteId}`, {
+                    headers: authHeaders()
+                        ,
+
+                    method: 'DELETE'
+                });
                 if (!res.ok) throw new Error('Failed to delete');
                 deleteId = null;
                 deleteOverlay.classList.remove('show');
