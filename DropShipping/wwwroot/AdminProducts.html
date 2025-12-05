@@ -541,6 +541,15 @@
                 : { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" };
         }
 
+        // --- Get JWT token from localStorage ---
+        function getAuthHeaders() {
+            const token = localStorage.getItem("token");
+            console.log(token);
+            return {
+                "Authorization": `Bearer ${token}`,
+
+            };
+        }
 
         // Build API URL (inline parameters style)
         function buildProductsUrl(searchTerm = '') {
@@ -786,40 +795,41 @@
                 let formData = new FormData();
 
                 if (currentEditId) {
-                    // For update (PUT): send id, name, description, modelYear, price, categoryId, brandId in query params; images in FormData body
-                    formData.append('id', data.id);
-                    formData.append('name', data.name);
-                    formData.append('description', data.description);
-                    formData.append('modelYear', data.modelYear.toString());
-                    formData.append('price', data.price.toString());
-                    formData.append('categoryId', data.categoryId.toString());
-                    formData.append('brandId', data.brandId.toString());
+                    // UPDATE (PUT)
+                    formData.append('Id', currentEditId); // if backend expects Id
+                    formData.append('Name', data.name);
+                    formData.append('Description', data.description);
+                    formData.append('ModelYear', data.modelYear.toString());
+                    formData.append('Price', data.price.toString());
+                    formData.append('CategoryId', data.categoryId.toString());
+                    formData.append('BrandId', data.brandId.toString());
+
                     if (pImg.files.length > 0) {
-                        // Loop through each file and append individually
                         for (let i = 0; i < pImg.files.length; i++) {
-                            formData.append('productImages', pImg.files[i]);
+                            formData.append('ProductImages', pImg.files[i]); // PascalCase
                         }
                     }
-                    url = `${API_BASE}/${currentEditId}`;
+                    url = `${API_BASE}`;
                 } else {
-                    // For create (POST): all in FormData body
-                    formData.append('name', data.name);
-                    formData.append('description', data.description);
-                    formData.append('modelYear', data.modelYear.toString());
-                    formData.append('price', data.price.toString());
-                    formData.append('categoryId', data.categoryId.toString());
-                    formData.append('brandId', data.brandId.toString());
+                    // CREATE (POST)
+                    formData.append('Name', data.name);
+                    formData.append('Description', data.description);
+                    formData.append('ModelYear', data.modelYear.toString());
+                    formData.append('Price', data.price.toString());
+                    formData.append('CategoryId', data.categoryId.toString());
+                    formData.append('BrandId', data.brandId.toString());
+
                     if (pImg.files.length > 0) {
-                        // Loop through each file and append individually
                         for (let i = 0; i < pImg.files.length; i++) {
-                            formData.append('productImages', pImg.files[i]);
+                            formData.append('ProductImages', pImg.files[i]); // PascalCase
                         }
                     }
+                    url = `${API_BASE}`;
                 }
-                console.log(formData);
+                console.log(getAuthHeaders());
                 const res = await fetch(url, {
                     method: currentEditId ? 'PUT' : 'POST',
-                    headers: authHeaders(),
+                   headers: getAuthHeaders(),
                     body: formData
                 });
 
