@@ -29,8 +29,9 @@ namespace BAL.Services.Mapping
 
             //Product Mapping
             CreateMap(typeof(PaginatedResult<Product>), typeof(PaginatedResult<ProductDTO>));
+            CreateMap(typeof(PaginatedResult<Dropshipper>), typeof(PaginatedResult<DropshipperDetails>)).ReverseMap();
 
-            
+
             CreateMap<ProductCreateDTO,Product>().ReverseMap();
             CreateMap<Product,ProductUpdateDTO>().ReverseMap();
             CreateMap<Product,ProductDetailsDTO>().ForMember(dest => dest.Images, opt => opt.MapFrom<ProductImagesUrlResolver>()).ForMember(dest => dest.CategoryName, opt => opt.MapFrom(x => x.Category.Name))
@@ -129,6 +130,11 @@ namespace BAL.Services.Mapping
 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.User.IsActive))
 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.User.CreatedAt))
 .ReverseMap();
+
+
+
+
+
 
             CreateMap<DAL.Models.WalletTransaction, BAL.DTOs.DropshipperDTOs.WalletTransaction>().ReverseMap();
             CreateMap<DAL.Models.Wallet, BAL.DTOs.DropshipperDTOs.Wallet>().ReverseMap();

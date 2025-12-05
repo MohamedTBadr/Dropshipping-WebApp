@@ -1,10 +1,11 @@
-﻿using BAL.DTOs.DropshipperDTOs;
+﻿using BAL.DTOs;
+using BAL.DTOs.DropshipperDTOs;
 
 namespace BAL.Services.Interfaces
 {
     public interface IDropshipperService
     {
-        Task<IEnumerable<DropshipperDetails>> GetAllDropshippersAsync();
+        Task<PaginatedResult<DropshipperDetails>> GetAllDropshippersAsync(int page);
         Task<DropshipperDetails?> GetDropshipperByIdAsync(string userId);
         Task<DTOs.DropshipperDTOs.Wallet> GetDropshipperWalletByIdAsync(string userId);
 

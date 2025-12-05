@@ -79,6 +79,46 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+            .search-bar::placeholder {
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            .search-bar:focus {
+                outline: none;
+                background: rgba(255, 255, 255, 0.25);
+                border-color: rgba(255, 255, 255, 0.4);
+                box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+            }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
         }
 
         .back-btn {
@@ -94,6 +134,7 @@
             transition: var(--transition);
             border: 2px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
+            white-space: nowrap;
         }
 
             .back-btn:hover {
@@ -345,6 +386,7 @@
             align-items: center;
             gap: 0.5rem;
             white-space: nowrap;
+            text-decoration: none;
         }
 
             .add-to-cart:hover {
@@ -368,6 +410,41 @@
             font-size: 0.9rem;
             margin-left: 0.5rem;
         }
+
+        /* Search Results Info */
+        .search-info {
+            max-width: 1400px;
+            margin: 0 auto 1rem;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-query {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .clear-search {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .clear-search:hover {
+                background: var(--primary-dark);
+                transform: translateY(-2px);
+            }
 
         /* Footer Enhancement */
         footer {
@@ -459,6 +536,12 @@
             }
 
         /* Responsive Design */
+        @media (max-width: 1024px) {
+            .header-controls {
+                max-width: 350px;
+            }
+        }
+
         @media (max-width: 768px) {
             .product-grid {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -476,6 +559,14 @@
 
             header {
                 padding: 1rem;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .header-controls {
+                order: 3;
+                max-width: 100%;
+                margin-top: 1rem;
             }
 
             .back-btn span {
@@ -488,6 +579,12 @@
 
             .swiper-container {
                 height: 240px;
+            }
+
+            .search-info {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
             }
         }
 
@@ -538,6 +635,10 @@
             <h1>DropZone</h1>
         </a>
         <div class="header-controls">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" class="search-bar" placeholder="Search products...">
+            </div>
             <a href="index.html" class="back-btn">
                 <i class="fa fa-arrow-left"></i>
                 <span>Back to Home</span>
@@ -548,6 +649,13 @@
     <div class="category-header">
         <h2 class="category-title" id="categoryTitle">Category Products</h2>
         <div class="product-count" id="productCount">Loading products...</div>
+    </div>
+
+    <div class="search-info" id="searchInfo" style="display: none;">
+        <div class="search-query" id="searchQuery"></div>
+        <button class="clear-search" id="clearSearch">
+            <i class="fas fa-times"></i> Clear Search
+        </button>
     </div>
 
     <div class="filter-bar">
@@ -626,6 +734,10 @@
         const sortDropdown = document.querySelector("#sortDropdown");
         const gridViewBtn = document.querySelector("#gridView");
         const listViewBtn = document.querySelector("#listView");
+        const searchInput = document.querySelector("#searchInput");
+        const searchInfo = document.querySelector("#searchInfo");
+        const searchQuery = document.querySelector("#searchQuery");
+        const clearSearchBtn = document.querySelector("#clearSearch");
 
         // Get categoryId and name from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -634,7 +746,9 @@
         if (categoryName) categoryTitle.textContent = categoryName;
 
         let allProducts = [];
+        let filteredProducts = [];
         let currentView = 'grid';
+        let currentSearchTerm = '';
 
         async function loadProducts() {
             if (!categoryId) {
@@ -648,12 +762,13 @@
                 if (!response.ok) throw new Error("Products fetch failed");
                 const data = await response.json();
                 allProducts = data.result || [];
+                filteredProducts = [...allProducts];
 
                 if (allProducts.length === 0) {
                     showEmptyState("No products found in this category");
                 } else {
-                    renderProducts(allProducts);
-                    updateProductCount(allProducts.length);
+                    renderProducts(filteredProducts);
+                    updateProductCount(filteredProducts.length, allProducts.length);
                 }
             } catch (error) {
                 console.error(error);
@@ -669,20 +784,56 @@
 
         function showEmptyState(message) {
             productContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-box-open"></i>
-                        <h3>${message}</h3>
-                        <p>Try checking back later or browse other categories</p>
-                        <a href="index.html" class="back-btn" style="margin-top: 1.5rem;">
-                            <i class="fa fa-arrow-left"></i>
-                            Back to Home
-                        </a>
-                    </div>
-                `;
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <h3>${message}</h3>
+                            <p>Try checking back later or browse other categories</p>
+                            <a href="index.html" class="back-btn" style="margin-top: 1.5rem;">
+                                <i class="fa fa-arrow-left"></i>
+                                Back to Home
+                            </a>
+                        </div>
+                    `;
         }
 
-        function updateProductCount(count) {
-            productCount.textContent = `${count} product${count !== 1 ? 's' : ''} found`;
+        function updateProductCount(currentCount, totalCount = null) {
+            if (currentSearchTerm) {
+                productCount.textContent = `${currentCount} product${currentCount !== 1 ? 's' : ''} found for "${currentSearchTerm}"`;
+                searchQuery.textContent = `Showing ${currentCount} result${currentCount !== 1 ? 's' : ''} for "${currentSearchTerm}"`;
+                searchInfo.style.display = 'flex';
+            } else {
+                productCount.textContent = `${currentCount} product${currentCount !== 1 ? 's' : ''} found`;
+                searchInfo.style.display = 'none';
+            }
+
+            if (totalCount !== null && currentCount < totalCount) {
+                productCount.textContent += ` (filtered from ${totalCount})`;
+            }
+        }
+
+        function performSearch(searchTerm) {
+            currentSearchTerm = searchTerm.toLowerCase().trim();
+
+            if (!currentSearchTerm) {
+                filteredProducts = [...allProducts];
+                updateProductCount(filteredProducts.length, allProducts.length);
+                renderProducts(filteredProducts);
+                return;
+            }
+
+            filteredProducts = allProducts.filter(product => {
+                const searchFields = [
+                    product.name || '',
+                    product.description || '',
+                    product.brandName || '',
+                    product.categoryName || ''
+                ].map(field => field.toLowerCase());
+
+                return searchFields.some(field => field.includes(currentSearchTerm));
+            });
+
+            updateProductCount(filteredProducts.length, allProducts.length);
+            renderProducts(filteredProducts);
         }
 
         function sortProducts(products, sortBy) {
@@ -704,7 +855,28 @@
         function renderProducts(products) {
             productContainer.innerHTML = "";
 
-            products.forEach(p => {
+            if (products.length === 0) {
+                const noResultsMessage = currentSearchTerm
+                    ? `No products found for "${currentSearchTerm}". Try different keywords.`
+                    : "No products available in this category.";
+
+                productContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h3>${noResultsMessage}</h3>
+                            ${currentSearchTerm ? '<button class="clear-search" style="margin-top: 1.5rem;"><i class="fas fa-times"></i> Clear Search</button>' : ''}
+                        </div>
+                    `;
+
+                if (currentSearchTerm) {
+                    productContainer.querySelector('.clear-search').addEventListener('click', clearSearch);
+                }
+                return;
+            }
+
+            const sortedProducts = sortProducts(products, sortDropdown.value);
+
+            sortedProducts.forEach(p => {
                 const div = document.createElement("div");
                 div.className = `product-card ${currentView}-card`;
 
@@ -741,36 +913,35 @@
                 }
 
                 div.innerHTML = `
-                        ${badge ? `<div class="product-badge">${badge}</div>` : ''}
-                        <div class="swiper-container">
-                            <div class="swiper" id="${swiperId}">
-                                <div class="swiper-wrapper">${swiperSlides}</div>
-                                <div class="swiper-button-next"></div>
-                                <div class="swiper-button-prev"></div>
-                            </div>
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-title">${p.name}</h3>
-                            <div class="rating">
-                                <div class="stars">
-                                    ${p.categoryName},  
+                            ${badge ? `<div class="product-badge">${badge}</div>` : ''}
+                            <div class="swiper-container">
+                                <div class="swiper" id="${swiperId}">
+                                    <div class="swiper-wrapper">${swiperSlides}</div>
+                                    <div class="swiper-button-next"></div>
+                                    <div class="swiper-button-prev"></div>
                                 </div>
-                                <span class="rating-count">    ${p.brandName}</span>
                             </div>
-                            <p class="product-description">${p.description || 'High-quality product with excellent features. Perfect for everyday use.'}</p>
-                            <div class="price-container">
-                                <div>
-                                    ${hasDiscount ? `<span class="original-price">$${originalPrice.toFixed(2)}</span>` : ''}
-                                    <span class="product-price">$${p.price?.toFixed(2) || "N/A"}</span>
-                                    ${hasDiscount ? `<span class="discount-badge">-${discountPercent}%</span>` : ''}
+                            <div class="product-info">
+                                <h3 class="product-title">${p.name}</h3>
+                                <div class="rating">
+                                    <div class="stars">
+                                        ${p.categoryName},
+                                    </div>
+                                    <span class="rating-count">    ${p.brandName}</span>
                                 </div>
-                                <a href="productpage.html?productId=${p.id}" class="add-to-cart"> 
-                                    View Details
-                  
-                                </a>
+                                <p class="product-description">${p.description || 'High-quality product with excellent features. Perfect for everyday use.'}</p>
+                                <div class="price-container">
+                                    <div>
+                                        ${hasDiscount ? `<span class="original-price">$${originalPrice.toFixed(2)}</span>` : ''}
+                                        <span class="product-price">$${p.price?.toFixed(2) || "N/A"}</span>
+                                        ${hasDiscount ? `<span class="discount-badge">-${discountPercent}%</span>` : ''}
+                                    </div>
+                                    <a href="productpage.html?productId=${p.id}" class="add-to-cart">
+                                        View Details
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
 
                 productContainer.appendChild(div);
 
@@ -793,10 +964,17 @@
             });
         }
 
+        function clearSearch() {
+            searchInput.value = '';
+            currentSearchTerm = '';
+            filteredProducts = [...allProducts];
+            updateProductCount(filteredProducts.length, allProducts.length);
+            renderProducts(filteredProducts);
+        }
+
         // Event Listeners
         sortDropdown.addEventListener('change', () => {
-            const sortedProducts = sortProducts(allProducts, sortDropdown.value);
-            renderProducts(sortedProducts);
+            renderProducts(filteredProducts);
         });
 
         gridViewBtn.addEventListener('click', () => {
@@ -804,7 +982,7 @@
             gridViewBtn.classList.add('active');
             listViewBtn.classList.remove('active');
             productContainer.className = 'product-grid grid-view';
-            renderProducts(sortProducts(allProducts, sortDropdown.value));
+            renderProducts(filteredProducts);
         });
 
         listViewBtn.addEventListener('click', () => {
@@ -812,24 +990,26 @@
             listViewBtn.classList.add('active');
             gridViewBtn.classList.remove('active');
             productContainer.className = 'product-grid list-view';
-            renderProducts(sortProducts(allProducts, sortDropdown.value));
+            renderProducts(filteredProducts);
         });
 
-        // Demo function for cart
-        //function addToCart(productId) {
-        //    const btn = event?.target.closest('.add-to-cart');
-        //    if (btn) {
-        //        const originalText = btn.innerHTML;
-        //        btn.innerHTML = '<i class="fas fa-check"></i> Added!';
-        //        btn.style.background = 'linear-gradient(90deg, var(--accent-teal), #059669)';
+        // Search functionality
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch(e.target.value);
+            }, 300);
+        });
 
-        //        setTimeout(() => {
-        //            btn.innerHTML = originalText;
-        //            btn.style.background = 'linear-gradient(90deg, var(--primary-blue), var(--primary-dark))';
-        //        }, 2000);
-        //    }
-        ////    console.log(`Added product ${productId} to cart`);
-        //}
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                performSearch(e.target.value);
+            }
+        });
+
+        clearSearchBtn.addEventListener('click', clearSearch);
 
         // Initialize
         document.addEventListener("DOMContentLoaded", loadProducts);

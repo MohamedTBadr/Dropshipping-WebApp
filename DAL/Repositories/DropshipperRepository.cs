@@ -1,23 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BAL.DTOs;
 using DAL.Models;
 using DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata;
+using System.Text;
+using System.Threading.Tasks;
 
 
 namespace DAL.Repositories
 {
     public class DropshipperRepository(DropShoppingDbContext dbContext) : IDropshipperRepository
     {
-        public async Task<IEnumerable<Dropshipper>> GetAllDropshippersAsync()
+        public async Task<PaginatedResult<Dropshipper>> GetAllDropshippersAsync(int page)
         {
-            return await dbContext.Dropshippers
+            var data= await dbContext.Dropshippers
                 .Include(d => d.User) // ✅ load related User
+                .Skip(page).Take(2)
                 .AsNoTracking()
                 .ToListAsync();
+
+
+            var totalCount = dbContext.Dropshippers.Count();
+            return new PaginatedResult<Dropshipper>
+            {
+                PageIndex = page,
+                PageSize = 10,
+                TotalCount = totalCount,
+                Result = data
+            };
         }
 
         public async Task<Dropshipper> GetDropshipperByIdAsync(string userId)

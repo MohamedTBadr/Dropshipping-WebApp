@@ -9,7 +9,7 @@ namespace PAL.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class BrandsController(IBrandService brandService) : ControllerBase
     {
 

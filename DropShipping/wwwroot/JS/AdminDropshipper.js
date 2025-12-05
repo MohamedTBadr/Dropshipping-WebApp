@@ -73,10 +73,10 @@ document.addEventListener('DOMContentLoaded', function () {
     async function fetchDropshippers() {
         try {
             showLoading();
-            let url = `${API_BASE_URL}/DropShipper?page=${currentPage}&pageSize=${pageSize}`;
 
+            const url = `${API_BASE_URL}/DropShipper?page=${currentPage}&pageSize=${pageSize}`;
             if (currentSearch) {
-                url += `&search=${encodeURIComponent(currentSearch)}`;
+                //url += `&search=${encodeURIComponent(currentSearch)}`;
             }
 
             const response = await fetch(url);
@@ -86,31 +86,23 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const data = await response.json();
+            currentPage = data.pageIndex + 1; // <-- FIX
 
-            // Handle different response structures
-            let dropshippers = [];
-            if (data.data && Array.isArray(data.data)) {
-                // Response has data array
-                dropshippers = data.data;
-                totalPages = data.totalPages || Math.ceil(data.totalCount / pageSize) || 1;
-            } else if (Array.isArray(data)) {
-                // Response is directly an array
-                dropshippers = data;
-                totalPages = 1;
-            } else if (data.items && Array.isArray(data.items)) {
-                // Response has items array
-                dropshippers = data.items;
-                totalPages = data.totalPages || Math.ceil(data.totalCount / pageSize) || 1;
-            }
+            // FIXED: Your backend returns { result: [], totalCount: 0, pageIndex: 1 }
+            const dropshippers = data.result || [];
+
+            totalPages = Math.ceil((data.totalCount || 0) / pageSize);
+            if (totalPages < 1) totalPages = 1;
 
             displayDropshippers(dropshippers);
             renderPagination();
 
         } catch (error) {
             console.error('Error fetching dropshippers:', error);
-            showError('Failed to load dropshippers. Please try again.');
+            showError('Failed to load dropshippers.');
         }
     }
+
 
     // Display dropshippers in table
     function displayDropshippers(dropshippers) {
@@ -148,14 +140,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 </td>
                 <td style="text-align:right">
                     <button class="btn-icon view-btn" data-id="${dropshipper.id}" title="View">
-                        <i class="fas fa-eye"></i>
+                     👁️
                     </button>
                     <button class="btn-icon edit-btn" data-id="${dropshipper.id}" title="Edit">
-                        <i class="fas fa-edit"></i>
+                        ✏️
                     </button>
                     <button class="btn-icon delete-btn" data-id="${dropshipper.id}" title="Delete">
-                        <i class="fas fa-trash"></i>
+🗑️
                     </button>
+
+             
+
                 </td>
             `;
 

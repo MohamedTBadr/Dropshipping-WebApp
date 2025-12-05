@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BAL.DTOs;
 using BAL.DTOs.DropshipperDTOs;
 using BAL.Services.Interfaces;
 using DAL.Models;
@@ -54,10 +55,10 @@ namespace BAL.Services
             await dropshipperRepository.DeleteDropshipperAsync(userId);
         }
 
-        public async Task<IEnumerable<DropshipperDetails>> GetAllDropshippersAsync()
+        public async Task<PaginatedResult<DropshipperDetails>> GetAllDropshippersAsync(int page )
         {
-            var dropshippers = await dropshipperRepository.GetAllDropshippersAsync();
-            var mapped = mapper.Map<IEnumerable<DropshipperDetails>>(dropshippers);       
+            var dropshippers = await dropshipperRepository.GetAllDropshippersAsync(page);
+            var mapped = mapper.Map<PaginatedResult<DropshipperDetails>>(dropshippers);       
             return mapped;
         }
 

@@ -16,9 +16,9 @@ namespace PAL.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDropshippers()
+        public async Task<IActionResult> GetAllDropshippers(int page)
         {
-            var dropshippers = await _dropshipperService.GetAllDropshippersAsync();
+            var dropshippers = await _dropshipperService.GetAllDropshippersAsync(page);
             return Ok(dropshippers);
         }
 
