@@ -75,9 +75,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchButton = document.getElementById('navSearchBtn');
 
     function performSearch() {
-        if (searchInput.value.trim()) {
-            alert(`Searching for: ${searchInput.value}`);
-            searchInput.value = '';
+        const searchTerm = searchInput.value.trim();
+        if (searchTerm) {
+            window.location.href = `../search.html?q=${encodeURIComponent(searchTerm)}`;
         }
     }
 
