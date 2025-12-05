@@ -27,7 +27,7 @@ namespace DAL.Repositories
             return new PaginatedResult<Dropshipper>
             {
                 PageIndex = page,
-                PageSize = 10,
+                PageSize = 2,
                 TotalCount = totalCount,
                 Result = data
             };

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // State variables
     let currentPage = 1;
-    const pageSize = 10;
+    const pageSize = 5;
     let totalPages = 1;
     let currentSearch = '';
     let currentDropshipperId = null;
@@ -86,12 +86,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const data = await response.json();
-            currentPage = data.pageIndex + 1; // <-- FIX
+            currentPage = data.pageIndex; // Removed to fix pagination sync issue
 
             // FIXED: Your backend returns { result: [], totalCount: 0, pageIndex: 1 }
             const dropshippers = data.result || [];
 
             totalPages = Math.ceil((data.totalCount || 0) / pageSize);
+            console.log(data.totalCount);
             if (totalPages < 1) totalPages = 1;
 
             displayDropshippers(dropshippers);
