@@ -91,10 +91,15 @@ class SearchPage {
                 id: p.id,
                 name: p.name,
                 price: p.price,
-                brand: { name: p.brandName },
-                category: { name: p.categoryName },
+                brand: { name: p.brandName || "Unknown" },
+                category: { name: p.categoryName || "Unknown" },
                 categoryId: p.categoryId,
-                images: p.images ? p.images.map(img => ({ image: img })) : [],
+                images: p.images && p.images.length > 0
+                    ? p.images.map(img => {
+                        // Handle both string format and object format
+                        return { image: typeof img === 'string' ? img : img.image };
+                    })
+                    : [],
                 modelYear: p.modelYear || "N/A",
                 description: p.description || "No description available."
             }));

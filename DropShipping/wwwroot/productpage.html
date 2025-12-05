@@ -71,6 +71,7 @@
             align-items: center;
             gap: 12px;
             text-decoration: none;
+            margin-right: auto; /* Push to left */
         }
 
         .circle {
@@ -105,48 +106,10 @@
             letter-spacing: -0.5px;
         }
 
-        /* Search Bar */
+        /* Search Bar - Hidden on Product Page */
         .search-bar {
-            display: flex;
-            flex: 0 1 600px;
-            margin: 0 30px;
-            position: relative;
+            display: none; /* Completely hide search bar */
         }
-
-            .search-bar input {
-                flex: 1;
-                padding: 14px 50px 14px 24px;
-                border: 2px solid var(--light-gray);
-                border-radius: 50px;
-                font-size: 15px;
-                transition: var(--transition);
-                background: white;
-                outline: none;
-            }
-
-                .search-bar input:focus {
-                    border-color: var(--primary);
-                    box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
-                }
-
-            .search-bar button {
-                position: absolute;
-                right: 6px;
-                top: 50%;
-                transform: translateY(-50%);
-                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-                color: white;
-                border: none;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                cursor: pointer;
-                transition: var(--transition);
-            }
-
-                .search-bar button:hover {
-                    transform: translateY(-50%) scale(1.05);
-                }
 
         /* Right Section */
         .right-section {
@@ -572,21 +535,11 @@
                 display: flex;
             }
 
-            .search-bar {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                margin: 0;
-                padding: 15px;
-                background: white;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                display: none;
+            /* Hide search bar completely on mobile too */
+            .search-bar,
+            .search-bar.active {
+                display: none !important;
             }
-
-                .search-bar.active {
-                    display: flex;
-                }
 
             .main-nav {
                 position: fixed;
@@ -637,6 +590,11 @@
             .dropdown.active .dropdown-menu {
                 display: block;
             }
+
+            /* Adjust logo positioning on mobile */
+            .logo {
+                margin-right: 0;
+            }
         }
 
         @keyframes pulse {
@@ -680,10 +638,7 @@
                 </div>
             </a>
 
-            <div class="search-bar" id="searchBar">
-                <input type="text" placeholder="Search products..." id="navSearchInput" />
-                <button id="navSearchBtn"><i class="fa fa-search"></i></button>
-            </div>
+            <!-- Search Bar Removed -->
 
             <div class="right-section">
                 <div class="cart">
@@ -835,9 +790,9 @@
                 categories.forEach(category => {
                     const li = document.createElement('li');
                     li.innerHTML = `
-                            <a href="Products.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
-                                <i class="fas fa-angle-right"></i> ${category.name}
-                            </a>`;
+                                <a href="Products.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
+                                    <i class="fas fa-angle-right"></i> ${category.name}
+                                </a>`;
                     this.dropdownMenu.appendChild(li);
                 });
             }
@@ -850,13 +805,12 @@
             // Mobile Menu
             const menuToggle = document.getElementById('menuToggle');
             const mainNav = document.getElementById('mainNav');
-            const searchBar = document.getElementById('searchBar');
             const dropdowns = document.querySelectorAll('.dropdown');
 
             if (menuToggle) {
                 menuToggle.addEventListener('click', () => {
                     mainNav.classList.toggle('active');
-                    searchBar.classList.toggle('active');
+                    // Removed searchBar toggle since search bar is removed
                     menuToggle.innerHTML = mainNav.classList.contains('active') ?
                         '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
                 });
