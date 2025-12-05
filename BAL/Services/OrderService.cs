@@ -156,7 +156,7 @@ namespace BAL.Services.Implementations
             order.UpdatedAt = DateTime.Now;
             var dropshipperId = order.DropshipperId;
 
-            _orderRepository.UpdateAsync(dropshipperId,order);
+            await _orderRepository.UpdateAsync(dropshipperId,order);
             await _orderRepository.SaveChangesAsync();
         }
 

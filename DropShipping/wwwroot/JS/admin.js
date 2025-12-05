@@ -36,7 +36,7 @@ function setupTabs() {
             tab.classList.add('active');
             document.getElementById('categories-tab').style.display = 'none';
             document.getElementById('brands-tab').style.display = 'none';
-            document.getElementById('orders-tab').style.display = 'none';
+            //document.getElementById('orders-tab').style.display = 'none';
             const tabName = tab.getAttribute('data-tab');
             document.getElementById(`${tabName}-tab`).style.display = 'block';
         });
@@ -246,10 +246,7 @@ function renderProducts() {
             <td>$${p.price}</td>
             <td>${p.categoryName || p.category?.name || 'N/A'}</td>
             <td>${p.brandName || p.brand?.name || 'N/A'}</td>
-            <td class="actions">
-                <button class="btn btn-outline"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-outline"><i class="fas fa-trash"></i></button>
-            </td>
+        
         `;
         tbody.appendChild(tr);
     });
@@ -263,10 +260,7 @@ function renderCategories() {
         tr.innerHTML = `
             <td>${c.id?.substring(0, 8)}...</td>
             <td>${c.name}</td>
-            <td class="actions">
-                <button class="btn btn-outline"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-outline"><i class="fas fa-trash"></i></button>
-            </td>
+       
         `;
         tbody.appendChild(tr);
     });
@@ -280,10 +274,7 @@ function renderBrands() {
         tr.innerHTML = `
             <td>${b.id?.substring(0, 8)}...</td>
             <td>${b.name}</td>
-            <td class="actions">
-                <button class="btn btn-outline"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-outline"><i class="fas fa-trash"></i></button>
-            </td>
+
         `;
         tbody.appendChild(tr);
     });
@@ -305,10 +296,7 @@ function renderOrders() {
             <td>$${order.orderDiscount?.toFixed(2) || 0}</td>
             <td><span class="badge ${statusClass}">${order.orderStatus}</span></td>
             <td>${order.ShippedDate || 'Not shipped'}</td>
-            <td class="actions">
-                <button class="btn btn-outline"><i class="fas fa-eye"></i></button>
-                <button class="btn btn-outline"><i class="fas fa-edit"></i></button>
-            </td>
+        
         `;
         tbody.appendChild(tr);
     });
