@@ -36,7 +36,7 @@ function setupTabs() {
             tab.classList.add('active');
             document.getElementById('categories-tab').style.display = 'none';
             document.getElementById('brands-tab').style.display = 'none';
-            document.getElementById('orders-tab').style.display = 'none';
+            //document.getElementById('orders-tab').style.display = 'none';
             const tabName = tab.getAttribute('data-tab');
             document.getElementById(`${tabName}-tab`).style.display = 'block';
         });
@@ -205,13 +205,23 @@ async function loadOrders(showNotif = false) {
 // ====================== UPDATE SALES CHART ======================
 function updateSalesChart() {
     if (!salesChart) return;
+
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const monthTotals = new Array(12).fill(0);
+
     filteredOrders.forEach(order => {
-        if (!order.ShippedDate || !order.OrderPrice) return;
-        const date = new Date(order.ShippedDate);
-        monthTotals[date.getMonth()] += order.OrderPrice;
+        // Use correct lowercase fields from your API
+        const shipped = order.shippedDate || order.ShippedDate;
+        const price = order.orderPrice || order.OrderPrice;
+
+        if (!shipped || !price) return;
+
+        const date = new Date(shipped);
+        const month = date.getMonth();
+
+        monthTotals[month] += Number(price);
     });
+
     salesChart.data.labels = months;
     salesChart.data.datasets[0].data = monthTotals;
     salesChart.update();
@@ -246,10 +256,7 @@ function renderProducts() {
             <td>$${p.price}</td>
             <td>${p.categoryName || p.category?.name || 'N/A'}</td>
             <td>${p.brandName || p.brand?.name || 'N/A'}</td>
-            <td class="actions">
-                <button class="btn btn-outline"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-outline"><i class="fas fa-trash"></i></button>
-            </td>
+        
         `;
         tbody.appendChild(tr);
     });
@@ -263,10 +270,7 @@ function renderCategories() {
         tr.innerHTML = `
             <td>${c.id?.substring(0, 8)}...</td>
             <td>${c.name}</td>
-            <td class="actions">
-                <button class="btn btn-outline"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-outline"><i class="fas fa-trash"></i></button>
-            </td>
+       
         `;
         tbody.appendChild(tr);
     });
@@ -280,10 +284,7 @@ function renderBrands() {
         tr.innerHTML = `
             <td>${b.id?.substring(0, 8)}...</td>
             <td>${b.name}</td>
-            <td class="actions">
-                <button class="btn btn-outline"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-outline"><i class="fas fa-trash"></i></button>
-            </td>
+
         `;
         tbody.appendChild(tr);
     });
@@ -305,10 +306,7 @@ function renderOrders() {
             <td>$${order.orderDiscount?.toFixed(2) || 0}</td>
             <td><span class="badge ${statusClass}">${order.orderStatus}</span></td>
             <td>${order.ShippedDate || 'Not shipped'}</td>
-            <td class="actions">
-                <button class="btn btn-outline"><i class="fas fa-eye"></i></button>
-                <button class="btn btn-outline"><i class="fas fa-edit"></i></button>
-            </td>
+        
         `;
         tbody.appendChild(tr);
     });
