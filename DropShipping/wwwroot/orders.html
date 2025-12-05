@@ -676,9 +676,9 @@
                 categories.forEach(category => {
                     const li = document.createElement('li');
                     li.innerHTML = `
-                            <a href="Products.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
-                                <i class="fas fa-angle-right"></i> ${category.name}
-                            </a>`;
+                                <a href="categorypage.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
+                                    <i class="fas fa-angle-right"></i> ${category.name}
+                                </a>`;
                     this.dropdownMenu.appendChild(li);
                 });
             }
@@ -749,9 +749,9 @@
             } catch (err) {
                 console.error("Error fetching orders:", err);
                 body.innerHTML = `
-                        <tr><td colspan="5" style="text-align:center; color: #dc3545; font-weight:600;">
-                            <i class="fas fa-exclamation-triangle"></i> Failed to load orders. Please try again.
-                        </td></tr>`;
+                            <tr><td colspan="5" style="text-align:center; color: #dc3545; font-weight:600;">
+                                <i class="fas fa-exclamation-triangle"></i> Failed to load orders. Please try again.
+                            </td></tr>`;
             }
         }
 
@@ -776,18 +776,18 @@
                 const status = statusMap[order.orderStatus] || statusMap[1];
 
                 body.innerHTML += `
-                        <tr>
-                            <td>
-                                <strong>${order.customerName || "Guest"}</strong><br>
-                                <span style="font-size:0.85rem; color:var(--gray);">${order.customerEmail || ""}</span><br>
-                                ${order.customerPhone || ""}
-                            </td>
-                            <td style="font-weight:500;">${productName}</td>
-                            <td><span class="${status.class}">${status.text}</span></td>
-                            <td>${order.items?.length || 0}</td>
-                            <td>${order.shippedDate ? order.shippedDate.split("T")[0] : new Date().toISOString().split('T')[0]}</td>
-                        </tr>
-                    `;
+                            <tr>
+                                <td>
+                                    <strong>${order.customerName || "Guest"}</strong><br>
+                                    <span style="font-size:0.85rem; color:var(--gray);">${order.customerEmail || ""}</span><br>
+                                    ${order.customerPhone || ""}
+                                </td>
+                                <td style="font-weight:500;">${productName}</td>
+                                <td><span class="${status.class}">${status.text}</span></td>
+                                <td>${order.items?.length || 0}</td>
+                                <td>${order.shippedDate ? order.shippedDate.split("T")[0] : new Date().toISOString().split('T')[0]}</td>
+                            </tr>
+                        `;
             });
         }
 
@@ -819,6 +819,8 @@
         fetchOrders();
 
     </script>
+    <script src="assets/js/search.js"></script>
+    <script src="JS/nav.js"></script>
 </body>
 
 </html>

@@ -434,4 +434,5 @@ class SearchPage {
     }
 }
 
+
 document.addEventListener("DOMContentLoaded", () => new SearchPage());
