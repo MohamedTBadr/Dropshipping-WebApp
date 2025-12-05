@@ -1,5 +1,4 @@
 ﻿<!doctype html>
-
 <html lang="en">
 
 <head>
@@ -7,22 +6,20 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Admin — Management</title>
 
-    ```
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/index.css" />
 
     <script>
-         --- Access control (optional) ---
-         const userType = localStorage.getItem("userType");
-         if (!userType || userType.toLowerCase() !== "admin") {
-             window.location.href = "/index.html";
-         }
+        // --- Require admin login (optional) ---
+        const userType = localStorage.getItem("userType");
+        if (!userType || userType.toLowerCase() !== "admin") {
+            window.location.href = "/index.html";
+        }
     </script>
-  
-
 </head>
 
 <body>
+
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -41,7 +38,6 @@
         </div>
     </div>
 
-    ```
     <!-- MAIN WRAPPER -->
     <div class="main">
         <header class="header">
@@ -80,7 +76,6 @@
                         </tr>
                     </thead>
                     <tbody id="tbody">
-                        <!-- Admin rows dynamically inserted via JS -->
                     </tbody>
                 </table>
             </div>
@@ -160,84 +155,98 @@
     </div>
 
     <script>
-        // Modal controls
-        // --- Get JWT token from localStorage ---
         function authHeaders() {
             const token = localStorage.getItem("token");
-            console.log(token);
-            return {
-                "Authorization": `Bearer ${token}`,
-
-            };
+            return { "Authorization": `Bearer ${token}` };
         }
-        const modalOverlay = document.getElementById('modalOverlay');
-        const deleteOverlay = document.getElementById('deleteOverlay');
 
-        document.getElementById('addAdminBtn')?.addEventListener('click', () => modalOverlay.classList.add('show'));
-        document.getElementById('cancelModal')?.addEventListener('click', () => modalOverlay.classList.remove('show'));
-        document.getElementById('cancelDelete')?.addEventListener('click', () => deleteOverlay.classList.remove('show'));
-
-        // Sidebar toggle
-        document.addEventListener('keydown', e => {
-            if (e.key.toLowerCase() === 'm') document.getElementById('sidebar').classList.toggle('collapsed');
-        });
-
-        const apiUrl = 'https://localhost:7000/api/Admin';
         const tbody = document.getElementById('tbody');
         const modalForm = document.getElementById('modalForm');
         const errorMessage = document.getElementById('error-message');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const deleteOverlay = document.getElementById('deleteOverlay');
+        const searchInput = document.getElementById("searchInput");
+
+        const apiUrl = 'https://localhost:7000/api/Admin';
+        let allAdmins = [];   // *** STORE ALL ADMINS FOR SEARCH ***
         let deleteId = null;
 
-        // --- FETCH & DISPLAY ADMINS ---
+        // Sidebar toggle
+        document.addEventListener('keydown', e => {
+            if (e.key.toLowerCase() === 'm')
+                document.getElementById('sidebar').classList.toggle('collapsed');
+        });
+
+        document.getElementById('addAdminBtn').addEventListener('click', () => modalOverlay.classList.add('show'));
+        document.getElementById('cancelModal').addEventListener('click', () => modalOverlay.classList.remove('show'));
+        document.getElementById('cancelDelete').addEventListener('click', () => deleteOverlay.classList.remove('show'));
+
+        // ------------ LOAD ADMINS ------------
         async function loadAdmins() {
             tbody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
             try {
-                const res = await fetch(apiUrl, {
-                    headers: authHeaders()
-
-                });
+                const res = await fetch(apiUrl, { headers: authHeaders() });
                 const data = await res.json();
 
-                if (!Array.isArray(data) || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6">No data found</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = '';
-                data.forEach(admin => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${admin.userName}</td>
-                        <td>${admin.email}</td>
-                        <td>${admin.phoneNumber}</td>
-                        <td>${admin.address.street}</td>
-                        <td>${admin.address.street}</td>
-                        <td style="text-align:right">
-                            <button class="btn delBtn" onclick="confirmDelete('${admin.id}')"> 🗑️</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            } catch (err) {
+                allAdmins = data; // store for search
+                displayAdmins(allAdmins);
+            } catch (e) {
+                console.error(e);
                 tbody.innerHTML = '<tr><td colspan="6">Error loading data</td></tr>';
-                console.error(err);
             }
         }
 
-        // --- ADD NEW ADMIN ---
+        // ------------ DISPLAY ADMINS (FILTERED OR FULL) ------------
+        function displayAdmins(list) {
+            if (!list.length) {
+                tbody.innerHTML = '<tr><td colspan="6">No matching results</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = "";
+
+            list.forEach(admin => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                        <td>${admin.userName}</td>
+                        <td>${admin.email}</td>
+                        <td>${admin.phoneNumber}</td>
+                        <td>${admin.address.city}</td>
+                        <td>${admin.address.country}</td>
+                        <td style="text-align:right">
+                            <button class="btn delBtn" onclick="confirmDelete('${admin.id}')">🗑️</button>
+                        </td>
+                    `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ------------ CLIENT-SIDE SEARCH ------------
+        searchInput.addEventListener("input", () => {
+            const q = searchInput.value.trim().toLowerCase();
+
+            const filtered = allAdmins.filter(a =>
+                a.userName.toLowerCase().includes(q) ||
+                a.email.toLowerCase().includes(q)
+            );
+
+            displayAdmins(filtered);
+        });
+
+        // ------------ ADD ADMIN ------------
         modalForm.addEventListener('submit', async e => {
             e.preventDefault();
-            errorMessage.textContent = '';
+            errorMessage.textContent = "";
 
             const payload = {
-                name: document.getElementById('adminName').value.trim(),
-                email: document.getElementById('adminEmail').value.trim(),
-                phone: document.getElementById('adminPhone').value.trim(),
-                password: document.getElementById('adminPassword').value,
-                confirmPassword: document.getElementById('adminConfirmPassword').value,
-                address_Street: document.getElementById('adminStreet').value.trim(),
-                address_City: document.getElementById('adminCity').value.trim(),
-                address_Country: document.getElementById('adminCountry').value.trim()
+                name: adminName.value.trim(),
+                email: adminEmail.value.trim(),
+                phone: adminPhone.value.trim(),
+                password: adminPassword.value,
+                confirmPassword: adminConfirmPassword.value,
+                address_Street: adminStreet.value.trim(),
+                address_City: adminCity.value.trim(),
+                address_Country: adminCountry.value.trim()
             };
 
             if (payload.password !== payload.confirmPassword) {
@@ -247,18 +256,17 @@
 
             try {
                 const res = await fetch(apiUrl, {
-                    method: 'POST',
+                    method: "POST",
                     headers: {
-                        ...authHeaders(),           // spread your auth headers
-                        'Content-Type': 'application/json'
+                        ...authHeaders(),
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify(payload)
                 });
 
-
                 if (!res.ok) {
-                    const errData = await res.json();
-                    errorMessage.textContent = errData?.message || 'Failed to add admin';
+                    const err = await res.json();
+                    errorMessage.textContent = err.message || "Failed to add admin";
                     return;
                 }
 
@@ -267,40 +275,39 @@
                 loadAdmins();
             } catch (err) {
                 console.error(err);
-                errorMessage.textContent = 'Error connecting to API';
+                errorMessage.textContent = "Error connecting to API";
             }
         });
 
-        // --- DELETE ADMIN ---
+        // ------------ DELETE ADMIN ------------
         function confirmDelete(id) {
             deleteId = id;
             deleteOverlay.classList.add('show');
         }
 
-        document.getElementById('confirmDelete').addEventListener('click', async () => {
+        document.getElementById("confirmDelete").addEventListener("click", async () => {
             if (!deleteId) return;
 
             try {
                 const res = await fetch(`${apiUrl}/${deleteId}`, {
+                    method: "DELETE",
                     headers: authHeaders()
-                        ,
-
-                    method: 'DELETE'
                 });
-                if (!res.ok) throw new Error('Failed to delete');
-                deleteId = null;
+
+                if (!res.ok) throw new Error("Failed to delete");
+
                 deleteOverlay.classList.remove('show');
+                deleteId = null;
                 loadAdmins();
             } catch (err) {
                 console.error(err);
-                alert('Error deleting admin');
+                alert("Error deleting admin");
             }
         });
 
-        // --- INITIAL LOAD ---
+        // START
         loadAdmins();
     </script>
-    ```
 
 </body>
 </html>
