@@ -205,13 +205,23 @@ async function loadOrders(showNotif = false) {
 // ====================== UPDATE SALES CHART ======================
 function updateSalesChart() {
     if (!salesChart) return;
+
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const monthTotals = new Array(12).fill(0);
+
     filteredOrders.forEach(order => {
-        if (!order.ShippedDate || !order.OrderPrice) return;
-        const date = new Date(order.ShippedDate);
-        monthTotals[date.getMonth()] += order.OrderPrice;
+        // Use correct lowercase fields from your API
+        const shipped = order.shippedDate || order.ShippedDate;
+        const price = order.orderPrice || order.OrderPrice;
+
+        if (!shipped || !price) return;
+
+        const date = new Date(shipped);
+        const month = date.getMonth();
+
+        monthTotals[month] += Number(price);
     });
+
     salesChart.data.labels = months;
     salesChart.data.datasets[0].data = monthTotals;
     salesChart.update();
