@@ -776,6 +776,15 @@
                 padding: 15px; /* Smaller padding on mobile */
             }
         }
+        /* Footer */
+        footer {
+            padding: 2rem;
+            background: #1e3a8a;
+            color: white;
+            text-align: center;
+            letter-spacing: .5px;
+            margin-top: 4rem;
+        }
 
     </style>
 </head>
@@ -864,39 +873,8 @@
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-col">
-                    <h3>About</h3>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Press</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>Support</h3>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Safety Center</a></li>
-                        <li><a href="#">Community</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>Legal</h3>
-                    <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Cookie Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>Contact</h3>
-                    <p>contact@info.com</p>
-                </div>
-            </div>
-        </div>
+    <footer>
+        <p>© 2025 DropZone. All rights reserved.</p>
     </footer>
 
     <div id="toastContainer"></div>
@@ -943,10 +921,10 @@
                 categories.forEach(category => {
                     const li = document.createElement('li');
                     li.innerHTML = `
-                                <a href="categorypage.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
-                                    <i class="fas fa-angle-right"></i> ${category.name}
-                                </a>
-                            `;
+                                        <a href="categorypage.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
+                                            <i class="fas fa-angle-right"></i> ${category.name}
+                                        </a>
+                                    `;
                     this.dropdownMenu.appendChild(li);
                 });
             }
@@ -968,7 +946,7 @@
             }
         });
     </script>
-
+    <script src="assets/js/cart-utils.js"></script>
     <script src="assets/js/categorypage.js"></script>
 
 </body>

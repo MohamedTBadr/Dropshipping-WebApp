@@ -66,6 +66,24 @@ function setupEventListeners() {
     document.getElementById('categories-card')?.addEventListener('click', () => loadCategories(true));
     document.getElementById('brands-card')?.addEventListener('click', () => loadBrands(true));
     document.getElementById('orders-card')?.addEventListener('click', () => loadOrders(true));
+
+    // --- LOGOUT LOGIC ---
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior
+
+            if (confirm('Are you sure you want to logout?')) {
+                // Remove authentication details
+                localStorage.removeItem('token');
+                localStorage.removeItem('userType'); // Required for the <head> check
+                localStorage.removeItem('dropzoneCart'); // Optional cleanup
+
+                // Redirect
+                window.location.href = 'loginregistration.html';
+            }
+        });
+    }
 }
 
 // ====================== CHARTS ======================
@@ -256,7 +274,6 @@ function renderProducts() {
             <td>$${p.price}</td>
             <td>${p.categoryName || p.category?.name || 'N/A'}</td>
             <td>${p.brandName || p.brand?.name || 'N/A'}</td>
-        
         `;
         tbody.appendChild(tr);
     });
@@ -270,7 +287,6 @@ function renderCategories() {
         tr.innerHTML = `
             <td>${c.id?.substring(0, 8)}...</td>
             <td>${c.name}</td>
-       
         `;
         tbody.appendChild(tr);
     });
@@ -284,7 +300,6 @@ function renderBrands() {
         tr.innerHTML = `
             <td>${b.id?.substring(0, 8)}...</td>
             <td>${b.name}</td>
-
         `;
         tbody.appendChild(tr);
     });
@@ -306,7 +321,6 @@ function renderOrders() {
             <td>$${order.orderDiscount?.toFixed(2) || 0}</td>
             <td><span class="badge ${statusClass}">${order.orderStatus}</span></td>
             <td>${order.ShippedDate || 'Not shipped'}</td>
-        
         `;
         tbody.appendChild(tr);
     });

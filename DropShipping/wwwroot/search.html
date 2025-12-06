@@ -806,6 +806,9 @@
                 opacity: 1;
             }
         }
+        .message-error {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -964,10 +967,10 @@
                 categories.forEach(category => {
                     const li = document.createElement('li');
                     li.innerHTML = `
-                                    <a href="categorypage.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
-                                        <i class="fas fa-angle-right"></i> ${category.name}
-                                    </a>
-                                `;
+                                        <a href="categorypage.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
+                                            <i class="fas fa-angle-right"></i> ${category.name}
+                                        </a>
+                                    `;
                     this.dropdownMenu.appendChild(li);
                 });
             }
@@ -990,6 +993,7 @@
     </script>
 
     <script src="assets/js/search.js"></script>
+    <script src="assets/js/product.js"></script>
 </body>
 
 </html>

@@ -35,7 +35,7 @@ class ProductPage {
             this.showError('No product selected. Please navigate from a product list.');
         } catch (error) {
             console.error('Error loading product data:', error);
-            this.showError('Failed to load product data');
+            // Toaster message removed here.
         }
     }
 
@@ -192,7 +192,7 @@ class ProductPage {
             images.forEach((imageData, index) => {
                 const img = document.createElement('img');
                 img.src = imageData.image;
-                img.alt = `Thumbnail ${index + 1}`; // Corrected template literal
+                img.alt = `Thumbnail ${index + 1}`;
                 img.classList.add('thumbnail');
                 img.dataset.index = index;
 
@@ -348,7 +348,6 @@ class ProductPage {
 
         const showSlider = product.images && product.images.length > 1;
 
-        // Corrected template literal for innerHTML
         card.innerHTML = `
             <div class="product-card-image">
                 <img src="${imageSrc}" alt="${product.name}" />
@@ -479,7 +478,7 @@ class ProductPage {
         this.updateCartCount();
 
         // Show success message
-        this.showMessage(`${product.name} added to cart!`, 'success'); // Corrected template literal
+        this.showMessage(`${product.name} added to cart!`, 'success');
 
         // Log for debugging
         console.log('Added to cart:', product.name);
@@ -552,7 +551,7 @@ class ProductPage {
         this.updateCartCount();
 
         // Show success message
-        this.showMessage(`${this.currentProduct.name} added to cart!`, 'success'); // Corrected template literal
+        this.showMessage(`${this.currentProduct.name} added to cart!`, 'success');
 
         console.log('Product added to cart:', this.currentProduct.name);
     }
@@ -602,30 +601,30 @@ class ProductPage {
 
             // Create ZIP file
             const zip = new JSZip();
-            const folder = zip.folder(`${productName}_images`); // Corrected template literal
+            const folder = zip.folder(`${productName}_images`);
 
             let successCount = 0;
 
             // Add each image to the ZIP
             for (let i = 0; i < images.length; i++) {
                 const imageUrl = images[i].image;
-                const fileName = `image_${i + 1}.jpg`; // Corrected template literal
+                const fileName = `image_${i + 1}.jpg`;
 
                 try {
-                    console.log(`Fetching image ${i + 1}:`, imageUrl); // Corrected template literal
+                    console.log(`Fetching image ${i + 1}:`, imageUrl);
                     const response = await fetch(imageUrl);
 
                     if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`); // Corrected template literal
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
 
                     const blob = await response.blob();
                     folder.file(fileName, blob);
                     successCount++;
-                    console.log(`Successfully added image ${i + 1} to ZIP`); // Corrected template literal
+                    console.log(`Successfully added image ${i + 1} to ZIP`);
 
                 } catch (error) {
-                    console.error(`Error fetching image ${i + 1}:`, error); // Corrected template literal
+                    console.error(`Error fetching image ${i + 1}:`, error);
                 }
             }
 
@@ -633,7 +632,7 @@ class ProductPage {
                 throw new Error('No images could be downloaded');
             }
 
-            console.log(`Successfully processed ${successCount} out of ${images.length} images`); // Corrected template literal
+            console.log(`Successfully processed ${successCount} out of ${images.length} images`);
 
             // Generate ZIP file
             this.showMessage('Creating ZIP file...', 'info');
@@ -642,11 +641,11 @@ class ProductPage {
             console.log('ZIP file created successfully, size:', zipBlob.size, 'bytes');
 
             // Try to use File System Access API for location selection
-            await this.downloadWithLocationChoice(zipBlob, `${productName}_images.zip`); // Corrected template literal
+            await this.downloadWithLocationChoice(zipBlob, `${productName}_images.zip`);
 
         } catch (error) {
             console.error('Error in downloadImages:', error);
-            this.showMessage(`Failed to download images: ${error.message}`, 'error'); // Corrected template literal
+            this.showMessage(`Failed to download images: ${error.message}`, 'error');
         }
     }
 
@@ -675,7 +674,7 @@ class ProductPage {
                     await writable.close();
 
                     console.log('File saved successfully using File System Access API');
-                    this.showMessage('ZIP file saved successfully!', 'success'); // Corrected template literal
+                    this.showMessage('ZIP file saved successfully!', 'success');
 
                 } catch (error) {
                     if (error.name === 'AbortError') {
@@ -694,7 +693,7 @@ class ProductPage {
             }
         } catch (error) {
             console.error('Error in downloadWithLocationChoice:', error);
-            this.showMessage(`Download failed: ${error.message}`, 'error'); // Corrected template literal
+            this.showMessage(`Download failed: ${error.message}`, 'error');
         }
     }
 
@@ -714,7 +713,7 @@ class ProductPage {
         document.body.removeChild(link);
         URL.revokeObjectURL(link.href);
 
-        this.showMessage(`ZIP file "${filename}" is being downloaded to your default download folder!`, 'success'); // Corrected template literal
+        this.showMessage(`ZIP file "${filename}" is being downloaded to your default download folder!`, 'success');
     }
 
     loadSelectedProduct() {
@@ -740,7 +739,7 @@ class ProductPage {
     showMessage(message, type = 'info') {
         // Create and show a temporary message
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message message-${type}`; // Corrected template literal
+        messageDiv.className = `message message-${type}`;
         messageDiv.textContent = message;
         messageDiv.style.cssText = `
             position: fixed;

@@ -1,5 +1,4 @@
-﻿
-// =======================
+﻿// =======================
 // CONFIG
 // =======================
 const API_BASE = 'https://localhost:7000/api/Brands';
@@ -10,7 +9,6 @@ function authHeaders() {
     console.log(token);
     return {
         "Authorization": `Bearer ${token}`,
-        
     };
 }
 
@@ -80,11 +78,9 @@ function renderTable(categories) {
 // =======================
 async function fetchAndRender() {
     try {
-        const res = await fetch(API_BASE
-            , {
+        const res = await fetch(API_BASE, {
             headers: authHeaders()
-            }
-        );
+        });
 
         if (!res.ok) throw new Error(res.statusText);
 
@@ -257,6 +253,23 @@ searchInput.addEventListener('input', () => {
     });
 });
 
+// --- LOGOUT LOGIC ---
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default link behavior
+
+        if (confirm('Are you sure you want to logout?')) {
+            // Remove authentication details
+            localStorage.removeItem('token');
+            localStorage.removeItem('userType'); // Required for the <head> check
+            localStorage.removeItem('dropzoneCart'); // Optional cleanup
+
+            // Redirect
+            window.location.href = 'index.html';
+        }
+    });
+}
 // =======================
 // INIT
 // =======================

@@ -369,15 +369,6 @@
                 box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
             }
 
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-            .btn-danger:hover {
-                background-color: #dc2626;
-            }
-
         .btn-secondary {
             background-color: var(--gray);
             color: white;
@@ -895,6 +886,9 @@
             letter-spacing: .5px;
             margin-top: auto;
         }
+        .message-error {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -995,9 +989,6 @@
 
                         <div class="account-info">
                             <div><div class="data-label">Account ID</div><div class="data-value" id="accountId"></div></div>
-                            <div>
-                                <button class="btn btn-danger" id="deactivateBtn"><i class="fas fa-user-slash"></i> Deactivate</button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -1147,9 +1138,9 @@
                 categories.forEach(category => {
                     const li = document.createElement('li');
                     li.innerHTML = `
-                            <a href="categorypage.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
-                                <i class="fas fa-angle-right"></i> ${category.name}
-                            </a>`;
+                                        <a href="categorypage.html?categoryId=${category.id}&categoryName=${encodeURIComponent(category.name)}">
+                                            <i class="fas fa-angle-right"></i> ${category.name}
+                                        </a>`;
                     this.dropdownMenu.appendChild(li);
                 });
             }
@@ -1311,19 +1302,19 @@
             if (!walletData) return;
             const walletSummary = document.getElementById("walletSummary");
             walletSummary.innerHTML = `
-                    <div class="wallet-card">
-                        <div class="data-label" style="color:rgba(255,255,255,0.8)">Total Purchased Amount</div>
-                        <div class="wallet-amount">${formatCurrency(walletData.balance)}</div>
-                        <div style="font-size:0.9rem">Total Purchased Amount</div>
-                    </div>
-                    <div class="wallet-card wallet-card-secondary">
-                        <div class="data-label" style="color:rgba(255,255,255,0.8)">Wallet ID</div>
-                        <div class="wallet-amount">#${walletData.walletId}</div>
-                    </div>
-                    <div class="wallet-card wallet-card-warning">
-                        <div class="data-label" style="color:rgba(255,255,255,0.8)">Transactions</div>
-                        <div class="wallet-amount">${transactionsData.length}</div>
-                    </div>`;
+                                <div class="wallet-card">
+                                    <div class="data-label" style="color:rgba(255,255,255,0.8)">Total Purchased Amount</div>
+                                    <div class="wallet-amount">${formatCurrency(walletData.balance)}</div>
+                                    <div style="font-size:0.9rem">Total Purchased Amount</div>
+                                </div>
+                                <div class="wallet-card wallet-card-secondary">
+                                    <div class="data-label" style="color:rgba(255,255,255,0.8)">Wallet ID</div>
+                                    <div class="wallet-amount">#${walletData.walletId}</div>
+                                </div>
+                                <div class="wallet-card wallet-card-warning">
+                                    <div class="data-label" style="color:rgba(255,255,255,0.8)">Transactions</div>
+                                    <div class="wallet-amount">${transactionsData.length}</div>
+                                </div>`;
             populateWalletActivity();
         }
 
@@ -1339,13 +1330,13 @@
                 const typeBg = type === 'income' ? '#d1fae5' : type === 'expense' ? '#fee2e2' : '#dbeafe';
                 const amountSign = type === 'income' ? '+' : '-';
                 return `
-                        <tr>
-                            <td>${formatDate(act.date)}</td>
-                            <td>${act.description || 'Transaction'}</td>
-                            <td><span style="padding:4px 8px; border-radius:4px; background:${typeBg}; color:${typeColor}; font-size:0.85rem; font-weight:600;">${type}</span></td>
-                            <td><strong>${amountSign}${formatCurrency(Math.abs(act.amount || 0))}</strong></td>
-                            <td>${formatCurrency(act.balanceAfter || act.balance || 0)}</td>
-                        </tr>`;
+                                    <tr>
+                                        <td>${formatDate(act.date)}</td>
+                                        <td>${act.description || 'Transaction'}</td>
+                                        <td><span style="padding:4px 8px; border-radius:4px; background:${typeBg}; color:${typeColor}; font-size:0.85rem; font-weight:600;">${type}</span></td>
+                                        <td><strong>${amountSign}${formatCurrency(Math.abs(act.amount || 0))}</strong></td>
+                                        <td>${formatCurrency(act.balanceAfter || act.balance || 0)}</td>
+                                    </tr>`;
             }).join('');
         }
 
@@ -1359,14 +1350,14 @@
                 const type = tx.type || 'transaction';
                 const status = tx.status || 'completed';
                 return `
-                        <tr>
-                            <td>${tx.id || tx.transactionId || 'N/A'}</td>
-                            <td>${formatDate(tx.date || tx.transactionDate)}</td>
-                            <td>${tx.description || 'Transaction'}</td>
-                            <td><span style="font-size:0.85rem; font-weight:600; text-transform:capitalize;">${type}</span></td>
-                            <td><strong>${formatCurrency(tx.amount || 0)}</strong></td>
-                            <td><span style="padding:4px 8px; border-radius:4px; background:#d1fae5; color:#065f46; font-size:0.85rem; font-weight:600;">${status}</span></td>
-                        </tr>`;
+                                    <tr>
+                                        <td>${tx.id || tx.transactionId || 'N/A'}</td>
+                                        <td>${formatDate(tx.date || tx.transactionDate)}</td>
+                                        <td>${tx.description || 'Transaction'}</td>
+                                        <td><span style="font-size:0.85rem; font-weight:600; text-transform:capitalize;">${type}</span></td>
+                                        <td><strong>${formatCurrency(tx.amount || 0)}</strong></td>
+                                        <td><span style="padding:4px 8px; border-radius:4px; background:#d1fae5; color:#065f46; font-size:0.85rem; font-weight:600;">${status}</span></td>
+                                    </tr>`;
             }).join('');
         }
 
@@ -1467,13 +1458,8 @@
                 const success = await updateProfile(updatedData);
                 if (success) closeModal();
             });
-
-            document.getElementById('deactivateBtn').addEventListener('click', () => {
-                if (confirm('Deactivate account?')) {
-                    updateProfile({ ...dropshipperData, isActive: false });
-                }
-            });
         });
     </script>
+    <script src="assets/js/product.js"></script>
 </body>
 </html>

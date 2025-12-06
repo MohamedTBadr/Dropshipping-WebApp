@@ -11,7 +11,11 @@
     <link rel="stylesheet" href="CSS/ShoppingCartCSS.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-
+<style>
+    .message-error {
+    display: none !important;
+}
+</style>
 <body>
     <!-- Header -->
     <header class="header">
@@ -139,12 +143,12 @@
 
                             const row = document.createElement('tr');
                             row.innerHTML = `
-                                    <td>${date}</td>
-                                    <td>${description}</td>
-                                    <td>${type}</td>
-                                    <td class="${amountClass}">${amountSign} $${Math.abs(amount).toFixed(2)}</td>
-                                    <td><span class="badge ${amount >= 0 ? 'bg-success' : 'bg-danger'}">Completed</span></td>
-                                `;
+                                        <td>${date}</td>
+                                        <td>${description}</td>
+                                        <td>${type}</td>
+                                        <td class="${amountClass}">${amountSign} $${Math.abs(amount).toFixed(2)}</td>
+                                        <td><span class="badge ${amount >= 0 ? 'bg-success' : 'bg-danger'}">Completed</span></td>
+                                    `;
                             transactionTableBody.appendChild(row);
                         });
                     }
@@ -156,6 +160,7 @@
                 });
         });
     </script>
+    <script src="assets/js/product.js"></script>
 </body>
 
 </html>
